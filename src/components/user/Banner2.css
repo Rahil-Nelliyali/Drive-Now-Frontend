@@ -1,0 +1,66 @@
+.cool-banner-container {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #1a1a1a;
+  }
+  
+  .cool-banner-content {
+    position: absolute;
+    z-index: 1;
+    text-align: center;
+    color: #fff;
+  }
+  
+  .cool-banner-title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .cool-banner-description {
+    font-size: 24px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+  
+  .cool-explore-btn {
+    background-color: #007bff;
+    color: #fff;
+    font-size: 18px;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cool-explore-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .cool-banner-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0.7;
+    animation: coolZoomInOut 10s ease-in-out infinite alternate;
+  }
+  
+  @keyframes coolZoomInOut {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.1);
+    }
+  }
+  

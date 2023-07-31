@@ -1,25 +1,61 @@
-import logo from './logo.svg';
 import './App.css';
+import {BrowserRouter as Router,Route,Routes} from 'react-router-dom'
+import Login from './components/accounts/Login'
+import Home from "./pages/Home";
+import Register from "./components/accounts/Register";
+import AdminHome from './pages/admin/AdminHome'
+import Renter from "./components/admin/Renter";
+import User from "./components/admin/User";
+import Renterregister from './components/renter/Renterregister'
+import LoginRenter from './components/renter/LoginRenter'
+import Dashboards from "./components/renter/Dashboards";
+
+import Car from './components/user/Car'
+import SingleCar from "./components/user/CarDetail";
+
+import Cars from './components/admin/Cars'
+
+import Carrenter from './components/renter/Carrenter'
+import CreateCar from './components/renter/CreateCar'
+import CarDetail from "./components/renter/DetailedCar";
+import CategoryRenter from './components/renter/CategoryRenter'
+import CreateCategory from './components/renter/CreateCategory'
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <Routes>
+
+        
+          <Route path='/' exact Component={Home} />
+          <Route path='/login' Component={Login} />
+          <Route path='/register' Component={Register} />
+          <Route path='/car' exact Component={Car} />
+          <Route path='/cardetail/:id' exact Component={SingleCar} />
+
+
+          <Route path='/adminhome' exact Component={AdminHome} />
+          <Route path='/renter' Component={Renter} />
+          <Route path='/user' Component={User} />
+          <Route path='/cars' Component={Cars} />
+
+
+          <Route path='/rentersignup' Component={Renterregister}/>
+          <Route path='/rentersignin' Component={LoginRenter}/>
+          <Route path='/dashboards' Component={Dashboards} />
+          <Route path='/carrenter' Component={Carrenter} />
+          <Route path='/createcar' Component={CreateCar}/>   
+          <Route path='/singlecardetail/:id' exact Component={CarDetail}/>
+          <Route path='/categoryrenter' Component={CategoryRenter}/>
+          <Route path='/createcategory' Component={CreateCategory}/>
+
+        </Routes>
+      </Router>
     </div>
   );
 }
 
 export default App;
+

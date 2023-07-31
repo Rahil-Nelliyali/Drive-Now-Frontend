@@ -1,0 +1,48 @@
+/* Car.css */
+
+/* Styles for car images */
+.car-image {
+    max-width: 150px; /* Set the maximum width of the car image */
+    max-height: 100px; /* Set the maximum height of the car image */
+    width: auto;
+    height: auto;
+  }
+  /* Styles for status indicators */
+  .status {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    width: 80px;
+  }
+  
+  .approved {
+    background-color: #00a651; /* Green */
+  }
+  
+  .pending {
+    background-color: #f7d700; /* Yellow */
+  }
+  
+  /* Pagination styles */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  
+  .pagination button {
+    margin: 0.25rem;
+    cursor: pointer;
+    background-color: #f3f4f6;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+  }
+  
+  .pagination span {
+    margin: 0.25rem;
+    font-weight: bold;
+  }  
