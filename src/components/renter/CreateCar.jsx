@@ -30,12 +30,23 @@ function CreateCar() {
 
   useEffect(() => {
     async function categories() {
-      const response = await instance.get("cars/car-category/");
-      setCategorylist(response.data);
+      try {
+        const userId = JSON.parse(localStorage.getItem("user")).userID;
+        const response = await instance.get("cars/car-category/", {
+          params: { renter: userId },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setCategorylist(response.data);
+      } catch (error) {
+        toast.error("Failed to fetch categories");
+      }
     }
+  
     categories();
   }, []);
-
+  
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,14 +83,12 @@ function CreateCar() {
 
     console.log(image);
     
-    const res = await instance({
-      method: "post",
-      url: "cars/create-car/",
-      data: form,
+    const res = await instance.post("cars/create-car/",form,{
       headers: {
         "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-    });
+  });
     console.log(res);
     if (res.status === 201) {
       toast.success("car added");

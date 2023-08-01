@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import Navbar from './Navbar';
 import img from '../../images/avatar.png';
 import notfound from '../../images/notfound.gif';
-import instance from '../../utils/axios';
+import instance,  { BASE_URL } from '../../utils/axios';
 
 function Car() {
   const [cars, setCars] = useState([]);
@@ -14,7 +14,7 @@ function Car() {
     async function getCars() {
       setLoad(true);
       try {
-        const response = await instance.get('/cars/car/');
+        const response = await instance.get('/cars/home-list-car/');
         setCars(response.data);
       } catch (error) {
         console.error('Failed to fetch cars:', error);
@@ -45,7 +45,7 @@ function Car() {
                       className='bg-white shadow-xl rounded-lg p-4 transition-transform transform hover:-translate-y-1'
                       key={car.id}
                     >
-                      <img className='w-full h-40 object-cover rounded-md' src={`${car.image}`} alt='car_image' />
+                      <img className='w-full h-40 object-cover rounded-md' src={`${BASE_URL}${car.image}`}  alt='car_image' />
                       <div className='mt-4'>
                         <h1 className='text-xl font-semibold text-primaryBlue'>{car?.name}</h1>
 

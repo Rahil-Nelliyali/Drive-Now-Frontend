@@ -32,7 +32,7 @@ function App() {
           <Route path='/' exact Component={Home} />
           <Route path='/login' Component={Login} />
           <Route path='/register' Component={Register} />
-          <Route path='/car' exact Component={Car} />
+          <Route path='/home-list-car' exact Component={Car} />
           <Route path='/cardetail/:id' exact Component={SingleCar} />
 
 

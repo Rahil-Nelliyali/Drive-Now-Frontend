@@ -52,7 +52,7 @@ function CarDetail() {
                   <p className='text-gray-600'>Fuel Type: {car.fuel_type}</p>
                   <p className='text-gray-600'>Transmission Type: {car.transmission_type}</p>
                   <p className='text-gray-600'>Seating Capacity: {car.seating_capacity}</p>
-                
+                <p className='text-gray-600'>Renter name: {car.renter_name}</p>
                 </div>
                 <div>
                   <p className='text-gray-600'>Air Conditioned: {car.air_conditioned ? 'Yes' : 'No'}</p>

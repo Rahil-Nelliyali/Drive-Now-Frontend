@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import instance from "../../utils/axios";
+import instance,  { BASE_URL } from '../../utils/axios';
 import Swal from "sweetalert2";
 import {
   Button,
@@ -30,7 +30,7 @@ function Car() {
   useEffect(() => {
     async function getCars() {
       try {
-        const response = await instance.get("cars/car/");
+        const response = await instance.get("cars/home-list-car/");
         setCars(response.data);
       } catch (error) {}
     }
@@ -119,7 +119,7 @@ function Car() {
                       <p>{car.name}</p>
                     </td>
                     <td className="px-6 py-4">
-                      <img className="car-image" src={car.image} alt={car.title} />
+                      <img className="car-image" src={`${BASE_URL}${car.image}`} alt={car.title} />
                     </td>
                     <td className="px-6 py-4">
                       <p>{car.category.name}</p>

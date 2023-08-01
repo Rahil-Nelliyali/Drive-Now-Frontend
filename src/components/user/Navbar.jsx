@@ -73,7 +73,7 @@ function NavBar() {
             </Link>
           </>
         ) : null}
-        <Link to='/car'>
+        <Link to='/home-list-car'>
           <li className='px-1 list-none text-white hover:text-customColorC transition duration-300'>
             Cars
           </li>
