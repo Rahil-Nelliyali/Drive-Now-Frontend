@@ -9,14 +9,14 @@ function Renter() {
   const [postsPerPage, setPostsPerPage] = useState(5);
 
   async function getRenters() {
-    const response = await instance.get("api-renter/renter/");
+    const response = await instance.get("api/renters/");
     setRenters(response.data);
   }
 
   useEffect(() => {
     async function getRenters() {
       try {
-        const response = await instance.get("api-renter/renter/");
+        const response = await instance.get("api/renters/");
         setRenters(response.data);
       } catch (error) {}
     }
@@ -25,7 +25,7 @@ function Renter() {
 
   const statusChange = (id) => {
     // console.log('user id', id)
-    instance.get(`api-renter/block/${id}/`).then(() => getRenters());
+    instance.get(`api/blockrenter/${id}/`).then(() => getRenters());
     // console.log(response);
   };
 

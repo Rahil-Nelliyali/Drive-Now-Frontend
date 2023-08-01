@@ -1,60 +1,92 @@
 import React, { useState } from "react";
+
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
 import login, { getLocal } from "../../helpers/auth";
 import Loginimage from "../../images/logo.png";
 import jwt_decode from 'jwt-decode';
 import { useEffect } from 'react';
+import axios from 'axios';
+import instance from '../../utils/axios';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const response = getLocal();
-  const history = useNavigate();
-  const location = useLocation();
+  const navigate = useNavigate();
+ 
 
-  let state = location.state;
 
-  useEffect(() => {
-    if (response) {
-      history('/');
-    }
-    if (state?.msg) {
-      toast.success(state?.msg);
-      history(state => ({ ...state, msg: null }));
-    }
-  });
+ 
 
   const handleHomeButtonClick = () => {
-    history('/');
+    navigate('/');
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const login_response = await login(email, password);
-    console.log(login_response, 'log response');
-
-    const local_response = getLocal('authToken');
-    if (local_response) {
-      const location = localStorage.getItem('location');
-      const decoded = jwt_decode(local_response);
-      console.log(decoded, 'decoded in login page');
-      if (decoded.is_admin) {
-        history('/adminhome');
-      } else if (decoded.is_staff) {
-        console.log('staff');
-        history('/');
-      } else if (location) {
-        history(location, { replace: true });
-        localStorage.removeItem('location');
-      } else {
-        history('/', { replace: true });
+  
+    if (!email || !password) {
+      alert('Please enter both email and password.');
+      return;
+    }
+  
+    const data = {
+      email: email,
+      password: password,
+    };
+  
+    try {
+      const response = await instance.post('http://localhost:8000/api/token/', data);
+      console.log(response);
+  
+      // Handle success response
+      if (response.status === 200) {
+        const token = response.data.token;
+        const user = response.data.user;
+  
+        // Save the token and user data in local storage
+        console.log(user, "------------------------user------------------------");
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+  
+        // Check user role and status for redirection
+        if (response.data.user.is_renter) {
+          console.log('renter');
+          navigate('/dashboards');
+        } else if (response.data.user.is_admin) {
+          console.log('admin');
+          navigate('/adminhome');
+        } else if (response.data.user.is_active) {
+          console.log('active user');
+          navigate('/');
+        } else {
+          console.log(response.data, 'inactive user');
+        }
+  
+        toast.success("Login Success");
       }
-    } else {
-      toast.error('Invalid User Credentials');
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        // Handle unauthorized error response
+        toast.error("Invalid email or password");
+        console.error('Error:', error.response.data.message);
+      } else {
+        // Handle other errors
+        toast.error("Login Failed");
+        console.error('Error:', error);
+      }
     }
   };
-
+  
+  
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100">
       <Toaster position="top-center" reverseOrder={false} />
@@ -73,7 +105,7 @@ function Login() {
               placeholder="Email"
               className="w-full border border-gray-300 rounded-full py-2 px-4 focus:outline-none focus:border-red-500"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={handleEmailChange}
             />
           </div>
           <div className="mb-6">
@@ -85,7 +117,7 @@ function Login() {
               placeholder="Password"
               className="w-full border border-gray-300 rounded-full py-2 px-4 focus:outline-none focus:border-red-500"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
             />
           </div>
           <button

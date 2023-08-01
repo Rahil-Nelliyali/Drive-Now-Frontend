@@ -1,74 +1,64 @@
 import React, { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, } from 'react-toastify';
 import { toast, Toaster } from "react-hot-toast";
 import 'react-toastify/dist/ReactToastify.css';
 import register from "../../images/logo.png";
+import instance from '../../utils/axios';
 
 const baseUrl = 'http://localhost:8000/api-renter/rentersignup/';
 
 function RenterRegister() {
-  const [renterData, setrenterData] = useState({
-    full_name: "",
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
     email: "",
+    phone_number: "",
     password: "",
-    mobile_no: "",
+    password2: "",
   });
 
-  const handleChange = (event) => {
-    setrenterData({
-      ...renterData,
-      [event.target.name]: event.target.value
-    });
+  const { first_name, last_name, email, phone_number,password, password2 } = formData;
+  
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const submitForm = async (e) => {
+  const signupSubmit = async (e) => {
     e.preventDefault();
-    const renterFormData = new FormData();
-    renterFormData.append('full_name', renterData.full_name);
-    renterFormData.append('email', renterData.email);
-    renterFormData.append('password', renterData.password);
-    renterFormData.append('mobile_no', renterData.mobile_no);
-  
+
+    if (first_name.trim() === "" || last_name.trim() === "" || email.trim() === "" || phone_number.trim() === "" || password.trim() === "" ) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    if (password !== password2) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
     try {
-      const response = await axios.post(baseUrl, renterFormData);
-      console.log(response.data);
-  
-      setrenterData({
-        full_name: "",
-        email: "",
-        password: "",
-        mobile_no: "",
+      const response = await instance.post('api/renterregister/', {
+        first_name,
+        last_name,
+        email,
+        username: email.split("@")[0],
+
+        phone_number,
+        password,
       });
-  
-      toast.success('Success!! Wait for Admin approval', {
-        position: 'top-center',
-        autoClose: 3000
-      });
-    } catch (error) {
-      if (error.response && error.response.status === 409) {
-        toast.error('Email or phone number already exists. Please use a different email or phone number.', {
-          position: 'top-center',
-          autoClose: 3000
-        });
-      }
-      else if (error.response && error.response.status === 400) {
-        toast.error('All fields are required.', {
-          position: 'top-center',
-          autoClose: 3000
-        });
+
+      console.log(response);
+      if (response.status === 200) {
+        toast.success("Please activate your email ");
       } else {
-        console.log(error);
-        toast.error('Registration failed', {
-          position: 'top-center',
-          autoClose: 3000
-        });
+        toast.error("Something went wrong");
       }
+    } catch(error) {
+      toast.error("Renter with same email id already exists.");
     }
   };
-  
-  
+
   
   
   return (
@@ -80,29 +70,37 @@ function RenterRegister() {
         <div className="flex items-center justify-center mb-6">
           <img src={register} alt="Login" className="w-32 h-32" />
         </div>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={signupSubmit}>
           <input
             className="w-full h-12 border-2 border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
             type="text"
-            name="full_name"
-            placeholder="Full Name"
-            value={renterData.full_name}
+            name="first_name"
+            placeholder="First Name"
+            value={first_name}
             onChange={handleChange}
           />
+          <input
+          className="w-full h-12 border-2 border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          type="text"
+          name="last_name"
+          placeholder="Last Name"
+          value={last_name}
+          onChange={handleChange}
+        />
           <input
             className="w-full h-12 border-2 border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
             type="email"
             name="email"
             placeholder="Email"
-            value={renterData.email}
+            value={email}
             onChange={handleChange}
           />
           <input
             className="w-full h-12 border-2 border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
             type="text"
-            name="mobile_no"
+            name="phone_number"
             placeholder="Phone"
-            value={renterData.mobile_no}
+            value={phone_number}
             onChange={handleChange}
           />
           <input
@@ -110,13 +108,20 @@ function RenterRegister() {
             type="password"
             name="password"
             placeholder="Password"
-            value={renterData.password}
+            value={password}
             onChange={handleChange}
           />
-
+          <input
+          className="w-full h-12 border-2 border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          type="password"
+          name="password2"
+          placeholder="Password"
+          value={password2}
+          onChange={handleChange}
+        />
           <button
             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-full py-3 font-bold transition duration-300"
-            onClick={submitForm}
+            type="submit"
           >
             SIGNUP
           </button>

@@ -27,15 +27,21 @@ function Categories() {
   };
 
   useEffect(() => {
-    getCategory();
+    const userId = JSON.parse(localStorage.getItem("user")).userID;
+    getCategory(userId);
   }, []);
 
-  const getCategory = async () => {
+  const getCategory = async (userId) => {
     try {
-      const response = await instance.get('cars/car-category/');
+      const response = await instance.get("cars/car-category/", {
+        params: { renter: userId },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       setCategory(response.data);
     } catch (error) {
-      toast.error('Failed to fetch categories');
+      toast.error("Failed to fetch categories");
     }
   };
 

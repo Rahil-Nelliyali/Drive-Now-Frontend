@@ -11,10 +11,11 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('renterLoginStatus');
-    localStorage.removeItem('renter_id');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     navigate('/');
-    toast.success('Logged Out');
+    toast.success('Renter Logged Out');
   };
 
   return (

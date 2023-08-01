@@ -67,9 +67,11 @@ function CreateCar() {
         return;
       }
     }
-  
+    const renterID = JSON.parse(localStorage.getItem("user")).userID; // Get the renter's ID from localStorage
+    form.append("renter", renterID); // Include
 
     console.log(image);
+    
     const res = await instance({
       method: "post",
       url: "cars/create-car/",

@@ -14,9 +14,11 @@ export default function Sidebar() {
     const history = useNavigate()
 
     const adminLogout = () => {
-        localStorage.removeItem('authToken')
-        toast.success("Logged Out ");
-        history('/')
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      history('/');
+      toast.success('Admin Logged Out');
     }
     return (
         <div className='bg-black z-50 absolute h-auto min-h-screen xl:relative left-0 w-2/4 md:w-2/6 lg:w-1/5 shadow-xl font-poppins'>

@@ -194,31 +194,47 @@ console.log(formData,'asdfghj');
   const handleButtonClicks = () => {
     navigate('/singlecardetail/${car?.id}'); 
   };
-  const getcars = async () => {
+
+
+  useEffect(() => {
+    const userId = JSON.parse(localStorage.getItem("user")).userID;
+    getcars(userId);
+  }, []);
+
+  const getcars = async (userId) => {
     try {
-      const response = await instance.get("cars/car/");
+      const response = await instance.get("cars/car/", { params: { renter: userId },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },});
       setCars(response.data);
     } catch (error) {
       toast.error("Failed to fetch cars");
     }
   };
-console.log(cars);
-  useEffect(() => {
-    getcars();
-  }, []);
+
+
+
 
   useEffect(() => {
-    getCategory();
+    const userId = JSON.parse(localStorage.getItem("user")).userID;
+    getCategory(userId);
   }, []);
 
-  const getCategory = async () => {
+  const getCategory = async (userId) => {
     try {
-      const response = await instance.get("cars/car-category/");
+      const response = await instance.get("cars/car-category/", {
+        params: { renter: userId },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       setCategory(response.data);
     } catch (error) {
-      toast.error("Failed to fetch cat");
+      toast.error("Failed to fetch categories");
     }
   };
+
 
   async function getuser() {
     const response = await instance.get("api/users/");

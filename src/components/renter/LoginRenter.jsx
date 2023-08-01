@@ -1,47 +1,77 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import Loginimage from "../../images/login.png";
 import { toast, Toaster } from "react-hot-toast";
+import instance from '../../utils/axios';
 
-const baseUrl = 'http://localhost:8000/api-renter/';
 
 function RenterLogin() {
-  const [renterLoginData, setrenterLoginData] = useState({
-    email: '',
-    password: ''
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const history = useNavigate();
 
-  const handleChange = (event) => {
-    setrenterLoginData({
-      ...renterLoginData,
-      [event.target.name]: event.target.value
-    });
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
-  const submitForm = (e) => {
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const renterFormData = new FormData();
-    renterFormData.append('email', renterLoginData.email);
-    renterFormData.append('password', renterLoginData.password);
+
+    if (!email || !password) {
+      alert('Please enter both email and password.');
+      return;
+    }
+
+    const data = {
+      email: email,
+      password: password,
+    };
+
   
     try {
-      axios.post(baseUrl + 'renterlogin/', renterFormData)
-        .then((res) => {
-          if (res.data.bool === true) {
-            const renterId = res.data.renter_id; // Assuming the API returns renter information
+        const response = await instance.post('http://localhost:8000/api/token/', data);
+        console.log(response);
+  
+        // Handle success response
+        if (response.status === 200) {
+          const token = response.data.token;
+          const user = response.data.user;
+          // Save the token in local storage
+          console.log(user,"------------------------user------------------------");
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(user));
+          // Redirect to home page or perform other actions
+          toast.success("Login Success")
+          if (response.data.user.is_renter) {
+            navigate('/dashboards');
+            console.log('if');
+          } 
+         
+          else {
+            console.log(response.data, 'else');
+            toast.error("Use USer login")
+          }
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          // Handle unauthorized error response
+  
+          toast.error("Invalid email or password")
+          console.error('Error:', error.response.data.message);
+        } else {
+          // Handle other errors
+          toast.error("Login Failed")
+          console.error('Error:', error);
+        }
+      }
+    };
 
-            localStorage.setItem('renterLoginStatus', true);
-            localStorage.setItem('renter_id', renterId); // Corrected
-              window.location.href = '/dashboards';
-            } else {
-              toast.error(res.data.message);
-            }
-          } )
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
   const handleHomeButtonClick = () => {
     navigate('/');
@@ -65,15 +95,15 @@ function RenterLogin() {
       <Toaster position="top-center" reverseOrder={false} />
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">Renter Login</h1>
-        <form onSubmit={submitForm} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
             <input
               className="w-full h-12 border-2 border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               type="email"
               name="email"
               placeholder="Email"
-              value={renterLoginData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={handleEmailChange}
             />
             <span className="absolute top-3 right-4 text-gray-400">
               <svg
@@ -104,8 +134,8 @@ function RenterLogin() {
               type="password"
               name="password"
               placeholder="Password"
-              value={renterLoginData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={handlePasswordChange}
             />
             <span className="absolute top-3 right-4 text-gray-400">
               <svg

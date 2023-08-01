@@ -4,6 +4,7 @@ import './Banner.css'; // Import the CSS file for the Banner component
 import { Link} from 'react-router-dom';
 
 const Banner = () => {
+  const name = JSON.parse(localStorage.getItem("user")).name;
   return (
     <div className="custom-banner relative w-full h-screen">
       {/* Banner Image */}
@@ -18,7 +19,7 @@ const Banner = () => {
 
       {/* Content */}
       <div className="custom-banner-content absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center">
-        <h1 className="custom-banner-heading text-4xl font-semibold mb-4">Welcome to Your Seller Dashboard</h1>
+        <h1 className="custom-banner-heading text-4xl font-semibold mb-4">Welcome to Your Seller Dashboard, {name}</h1>
         <p className="custom-banner-text text-lg">Start managing your car listings and bookings now!</p>
         <Link to="/carrenter" className="custom-banner-button px-6 py-3 mt-8 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300">
         Get Started

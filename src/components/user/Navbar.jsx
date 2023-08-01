@@ -17,7 +17,7 @@ function NavBar() {
     }
   }
 
-  const user_auth = getLocal('authToken');
+  const user_auth =  localStorage.getItem('token');
   let user_name;
   if (user_auth) {
     user_name = jwtDecode(user_auth);
@@ -25,6 +25,8 @@ function NavBar() {
 
   const logout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     toast.success("Logged Out ");
 
     navigate('/');

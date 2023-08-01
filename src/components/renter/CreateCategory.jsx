@@ -2,47 +2,52 @@ import React, { useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import instance from "../../utils/axios";
-import Sidebar from "./Sidebar";
 
 function CreateCategory() {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  const userJSON = localStorage.getItem('user');
+  const user = userJSON ? JSON.parse(userJSON) : null;
+  console.log(user);
+  console.log(token)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(image);
+
     const formData = new FormData();
     formData.append("name", category);
     formData.append("description", description);
     if (image) {
       formData.append("image", image);
     }
+    const renterID = JSON.parse(localStorage.getItem("user")).userID; // Get the renter's ID from localStorage
+    formData.append("renter", renterID); // Include
 
     try {
-      const res = await instance.post(
-        "cars/create-car-category/",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(res);
+      const res = await instance.post("cars/create-car-category/", formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (res.status === 201) {
         toast.success("Category created");
         navigate("/categoryrenter");
       } else {
-        toast.error(res.data.message);
+        const errorData = await res.json();
+        console.error("Form submission failed:", errorData);
+        toast.error("An error occurred. Please try again.");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error submitting form:", error);
       toast.error("An error occurred. Please try again.");
     }
   };
+
 
   return (
     <div className="bg-gradient-to-br h-screen w-screen flex items-center justify-center">

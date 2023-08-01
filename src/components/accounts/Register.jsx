@@ -10,12 +10,11 @@ function Register() {
     last_name: "",
     email: "",
     phone_number: "",
-    driving_license_number:"",
     password: "",
     password2: "",
   });
 
-  const { first_name, last_name, email, phone_number,driving_license_number, password, password2 } = formData;
+  const { first_name, last_name, email, phone_number,password, password2 } = formData;
   
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,7 +23,7 @@ function Register() {
   const signupSubmit = async (e) => {
     e.preventDefault();
 
-    if (first_name.trim() === "" || last_name.trim() === "" || email.trim() === "" || phone_number.trim() === "" || password.trim() === "" || driving_license_number.trim() === "") {
+    if (first_name.trim() === "" || last_name.trim() === "" || email.trim() === "" || phone_number.trim() === "" || password.trim() === "" ) {
       toast.error("Please fill in all fields.");
       return;
     }
@@ -98,14 +97,7 @@ function Register() {
               value={phone_number}
               onChange={handleChange}
             />
-            <input
-            type="text"
-            name="driving_license_number"
-            placeholder="Driving License Number"
-            className="border border-gray-300 rounded-full py-2 px-4 focus:outline-none focus:border-red-500"
-            value={driving_license_number}
-            onChange={handleChange}
-          />
+          
             <input
               type="password"
               name="password"
