@@ -14,6 +14,7 @@ function Car() {
     async function getCars() {
       setLoad(true);
       try {
+        
         const response = await instance.get('/cars/home-list-car/');
         setCars(response.data);
       } catch (error) {

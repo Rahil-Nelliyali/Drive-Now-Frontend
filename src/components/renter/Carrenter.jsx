@@ -195,6 +195,12 @@ console.log(formData,'asdfghj');
     navigate('/singlecardetail/${car?.id}'); 
   };
 
+  const handleCreateSlot = (carId) => {
+    navigate(`/createslot/${carId}`);
+  };
+
+  
+
 
   useEffect(() => {
     const userId = JSON.parse(localStorage.getItem("user")).userID;
@@ -326,11 +332,12 @@ console.log(formData,'asdfghj');
                           Delete
                         </button>
                         <button
-                          onClick={() => handleEdit(car)}
+                          onClick={() => handleCreateSlot(car.id)}
                           className="bg-green-600 text-white rounded px-2 py-1 transition duration-300 ease-in-out transform hover:scale-110 hover:bg-green-700 focus:outline-none"
                         >
-                          Edit
+                          Add Slot
                         </button>
+                     
                       </div>
                     </td>
                     <td>

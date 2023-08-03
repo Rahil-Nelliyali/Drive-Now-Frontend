@@ -9,18 +9,20 @@ import User from "./components/admin/User";
 import Renterregister from './components/renter/Renterregister'
 import LoginRenter from './components/renter/LoginRenter'
 import Dashboards from "./components/renter/Dashboards";
-
 import Car from './components/user/Car'
 import SingleCar from "./components/user/CarDetail";
-
 import Cars from './components/admin/Cars'
-
 import Carrenter from './components/renter/Carrenter'
 import CreateCar from './components/renter/CreateCar'
 import CarDetail from "./components/renter/DetailedCar";
 import CategoryRenter from './components/renter/CategoryRenter'
 import CreateCategory from './components/renter/CreateCategory'
 
+
+import PaymentPage from './components/user/Payment'
+import PaymentSuccessPage from './components/user/PaymentSuccess'
+import RenterBookings from './components/renter/Bookings';
+import CreateSlot from './components/renter/CreateSlot';
 
 function App() {
   return (
@@ -34,6 +36,10 @@ function App() {
           <Route path='/register' Component={Register} />
           <Route path='/home-list-car' exact Component={Car} />
           <Route path='/cardetail/:id' exact Component={SingleCar} />
+          <Route path='/payment' exact Component={PaymentPage} />
+          <Route path='/success' exact Component={PaymentSuccessPage} />
+
+
 
 
           <Route path='/adminhome' exact Component={AdminHome} />
@@ -50,6 +56,8 @@ function App() {
           <Route path='/singlecardetail/:id' exact Component={CarDetail}/>
           <Route path='/categoryrenter' Component={CategoryRenter}/>
           <Route path='/createcategory' Component={CreateCategory}/>
+          <Route path='/renterbookings' Component={RenterBookings}/>
+          <Route path='/createslot/:id' Component={CreateSlot}/>
 
         </Routes>
       </Router>
