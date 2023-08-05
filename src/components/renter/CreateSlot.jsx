@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import jwtDecode from 'jwt-decode';
-import { getLocal } from '../../helpers/auth'
 import { toast,Toaster } from 'react-hot-toast';
 import { useParams, useNavigate } from 'react-router-dom';
 import instance from '../../utils/axios';
@@ -10,10 +8,7 @@ const CreateSlot = () => {
     const [loading, setLoading] = useState(true);
     const [car, setCar] = useState('');
     const [date, setDate] = useState('');
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
     const [status, setStatus] = useState(true);
-    const [slotDuration, setSlotDuration] = useState('');
     const navigate = useNavigate();
 
    
@@ -48,7 +43,7 @@ const CreateSlot = () => {
 
       const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!date || !startTime || !endTime || !slotDuration) {
+        if (!date) {
             toast.error("Please fill in all the required fields.");
             return;
           }
@@ -56,10 +51,8 @@ const CreateSlot = () => {
         const slotData = {
           car: car.id,
           date,
-          start_time: startTime,
-          end_time: endTime,
+        
           status,
-          slot_duration: slotDuration,
         };
       console.log(slotData)
         try {
@@ -102,26 +95,8 @@ const CreateSlot = () => {
             className="w-full border-gray-300 border-2 rounded-md py-2 px-3"
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="startTime" className="block font-medium mb-1">Start Time:</label>
-          <input
-            type="time"
-            id="startTime"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-            className="w-full border-gray-300 border-2 rounded-md py-2 px-3"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="endTime" className="block font-medium mb-1">End Time:</label>
-          <input
-            type="time"
-            id="endTime"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-            className="w-full border-gray-300 border-2 rounded-md py-2 px-3"
-          />
-        </div>
+        
+        
         <div className="mb-4">
           <label htmlFor="status" className="block font-medium mb-1">Status:</label>
           <input
@@ -133,16 +108,7 @@ const CreateSlot = () => {
           />
           <span className="text-gray-700">Active</span>
         </div>
-        <div className="mb-4">
-          <label htmlFor="slotDuration" className="block font-medium mb-1">Slot Duration in min:</label>
-          <input
-            type="number"
-            id="slotDuration"
-            value={slotDuration}
-            onChange={(e) => setSlotDuration(e.target.value)}
-            className="w-full border-gray-300 border-2 rounded-md py-2 px-3"
-          />
-        </div>
+        
         <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">
           Create
         </button>

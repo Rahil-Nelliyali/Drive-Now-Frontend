@@ -24,6 +24,8 @@ import PaymentSuccessPage from './components/user/PaymentSuccess'
 import RenterBookings from './components/renter/Bookings';
 import CreateSlot from './components/renter/CreateSlot';
 
+import Bookings from './components/user/MyBookings';
+import AllBookings from './components/admin/Bookings';
 function App() {
   return (
     <div className="App">
@@ -38,6 +40,7 @@ function App() {
           <Route path='/cardetail/:id' exact Component={SingleCar} />
           <Route path='/payment' exact Component={PaymentPage} />
           <Route path='/success' exact Component={PaymentSuccessPage} />
+          <Route path='/mybookings' exact Component={Bookings} />
 
 
 
@@ -46,6 +49,7 @@ function App() {
           <Route path='/renter' Component={Renter} />
           <Route path='/user' Component={User} />
           <Route path='/cars' Component={Cars} />
+          <Route path='/allbookings' Component={AllBookings} />
 
 
           <Route path='/rentersignup' Component={Renterregister}/>

@@ -50,7 +50,7 @@ export default function Sidebar() {
         <h3 className='font-semibold'>Category</h3>
         </NavLink>
         <NavLink
-          to='/dashboards'
+          to='/renterbookings'
           className='px-1 list-none text-white hover:text-customColorC transition duration-300'
           activeClassName='text-customColorC'
         >

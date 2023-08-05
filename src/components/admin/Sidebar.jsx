@@ -8,7 +8,7 @@ import profile from '../../images/avatar.png'
 import { toast, Toaster } from "react-hot-toast";
 import { FaCar  } from 'react-icons/fa';
 import { FaUserTie } from 'react-icons/fa';
-
+import { FaCalendar } from 'react-icons/fa';
 
 export default function Sidebar() {
     const history = useNavigate()
@@ -33,6 +33,13 @@ export default function Sidebar() {
             >
               <BsBook size={20} className='mr-3' />
               <span>Dashboard</span>
+            </NavLink>
+            <NavLink
+              to="/allbookings"
+              className="flex items-center text-white font-semibold my-2 hover:text-green-400 transition-colors duration-200"
+            >
+              <FaCalendar size={20} className='mr-3' />
+              <span>Bookings</span>
             </NavLink>
             <NavLink
               to="/cars"

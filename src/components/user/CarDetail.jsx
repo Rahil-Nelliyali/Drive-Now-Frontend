@@ -12,7 +12,6 @@ function CarDetail() {
 
   
   const { id } = useParams();
-
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,36 +22,35 @@ function CarDetail() {
   const [showPayment, setShowPayment] = useState(false);
   const [bookedSlot, setBookedSlot] = useState([]);
   
+
   async function getSlotsForCar(carId) {
     try {
-      const response = await instance.get(`/cars/single-slot/${carId}/`, {
+      const response = await instance.get(`/cars/slots/${carId}/`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
+       
       });
+      
       return response.data;
     } catch (error) {
       console.error('Failed to fetch slots:', error);
       return [];
     }
   }
-  
 
   useEffect(() => {
     async function getCarDetails() {
-      
       try {
-       
-        const response = await instance.get(`/cars/single-car/${id}/`,{
+        const response = await instance.get(`/cars/single-car/${id}/`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-          }
+          },
         });
         setCar(response.data);
-        const carId = response.data.id;
-        const slotsData = await getSlotsForCar(carId);
-        setSlots(slotsData);
         console.log(response.data);
+        const slotsData = await getSlotsForCar(response.data.id);
+        setSlots(slotsData);
       } catch (error) {
         console.error('Failed to fetch car details:', error);
       }
@@ -61,57 +59,55 @@ function CarDetail() {
 
    
 
-    async function fetchData() {
-      if (showDate && date) {
-        const slotsData = await getSlotsForCar(car.id);
-        console.log(slotsData)
-        const selected = slotsData.date === date ? [slotsData] : [];
-        setSelectedSlots(selected);
-      }
-    }
-    
-
-    // Fetch car details 
+   
     getCarDetails();
-    fetchData();
-  }, [id, showDate, date]);
+    
+  }, [id]);
 
   const handleChange = async (e) => {
-    const selectedDate = e.target.value;
-    setDate(selectedDate);
-    const slotsData = await getSlotsForCar(car.id);
-    if (slotsData.date === selectedDate) {
-      setSelectedSlots([slotsData]);
-    } else {
-      setSelectedSlots([]);
-    }
+   
+    setDate( e.target.value)
+    const selected = slots.filter((slot) => slot.date ===  e.target.value);
+    setSelectedSlots(selected);
   };
   
+
   const toggleDate = () => {
-    setShowDate((prevShowDate) => !prevShowDate);
+    setShowDate(true);
   };
 
   const handleClick = (id) => {
+    console.log()
     const buttonElement = document.getElementById(id);
     if (buttonElement) {
       buttonElement.classList.toggle('bg-blue-500');
       buttonElement.classList.toggle('bg-green-500');
     }
-    const bookedslot = selectedSlots?.filter((selected) => selected.id === id);
-    setBookedSlot(bookedslot);
+    console.log(selectedSlots,'selected')
+    const bookedslot = selectedSlots?.filter((selected) => selected.id === id)
+    console.log(bookedslot,'booked slot')
+    
+    setBookedSlot(bookedslot)
+  };
+  
+  
+  const fetchData = async () => {
+    if (showDate && date) {
+      const slotsData = await getSlotsForCar(car.id);
+      console.log(slotsData);
+      setSlots(slotsData);
+      const selected = slotsData.filter(slot => slot.date === date);
+      setSelectedSlots(selected);
+    }
   };
 
-  function formatTime(time) {
-    const parts = time.split(':');
-    let hours = parseInt(parts[0]);
-    const minutes = parts[1];
-    const ampm = hours >= 12 ? 'PM' : 'AM';
+ 
+  
+ 
 
-    hours %= 12;
-    hours = hours || 12;
 
-    return `${hours}:${minutes} ${ampm}`;
-  }
+ 
+
 
   return (
     <div className='w-full h-full font-poppins relative'>
@@ -134,9 +130,11 @@ function CarDetail() {
             <div className='mt-4'>
               <h1 className='text-3xl font-semibold text-primaryBlue'>{car.name}</h1>
               <p className='text-gray-600 mt-2'>{car.description}</p>
+
+
               {!showDate ? (
                 <button
-                  className='bg-blue-500 text-white py-2 px-4 rounded-md ms-1 mt-2'
+                  className="bg-blue-500 text-white py-2 px-4 rounded-md ms-1 mt-2"
                   onClick={toggleDate}
                 >
                   Book Appointment
@@ -152,57 +150,58 @@ function CarDetail() {
                     min={new Date().toISOString().split('T')[0]}
                     className='mt-3 border-gray-300 border-2 rounded-md py-2 px-3'
                   />
-                </div>
-              )}
-              {showDate && selectedSlots.length === 0 && (
-                <p className='font-serif text-xl text-blue-500'>Select a Valid slot to book</p>
-              )}
-              {showDate && selectedSlots?.length > 0 && (
-                <div className='fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 mt-3'>
-                  <div className='bg-white rounded-lg p-6'>
-                    <div className='flex place-content-end'>
-                      <AiOutlineCloseCircle
-                        className='text-end text-gray-500'
-                        onClick={() => {
-                          setShowDate(false);
-                          setSelectedSlots([]);
-                          setDate('');
-                        }}
-                      />
-                    </div>
-                    <h5 className='mt-1 font-serif text-xl'>Available Slots:</h5>
-                    <div className='grid grid-cols-3 gap-4 mt-4'>
-                      {selectedSlots.map((slot) => {
-                        const startTime = formatTime(slot.start_time);
-                        const endTime = formatTime(slot.end_time);
-
-                        return (
-                          <button
-                            key={slot.id}
-                            className='bg-blue-500 text-white py-2 px-4 rounded-md shadow-2xl'
-                            id={slot.id}
-                            onClick={() => handleClick(slot.id)}
-                          >
-                            {startTime} - {endTime}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    <div className='w-full flex place-content-center'>
-                      <button
-                        className='bg-yellow-500 text-black py-2 px-4 rounded-md border-black mt-4'
-                        onClick={() => setShowPayment(true)}
-                      >
-                        Book
-                      </button>
-                    </div>
                   </div>
-                </div>
-              )}
-
+                  )
+                }
+                  
+                    
+      {showDate && selectedSlots?.length > 0 && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 mt-3">
+          <div className="bg-white rounded-lg p-6">
+            <div className="flex place-content-end">
+              <AiOutlineCloseCircle
+                className="text-end text-gray-500"
+                onClick={() => {
+                  setShowDate(false);
+                  setSelectedSlots([]);
+                  setDate('');
+                }}
+              />
+            </div>
+      
+            <h5 className="mt-1 font-serif text-xl">Available Slots:</h5>
+            <div className="grid grid-cols-3 gap-4 mt-4">
+            {selectedSlots.map((slot) => {
+              const startTime = slot.date;
+            
+              return (
+                <button
+                  key={slot.id}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded-md shadow-2xl ${slot.is_booked ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  id={slot.id}
+                  onClick={() => !slot.is_booked && handleClick(slot.id)}
+                  disabled={slot.is_booked}
+                >
+                  {startTime}
+                </button>
+              );
+            })}
+            </div>
+            <div className="w-full flex place-content-center">
+              <button
+                className="bg-yellow-500 text-black py-2 px-4 rounded-md border-black mt-4"
+                onClick={() => setShowPayment(true)}
+              >
+                Book
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
               {showPayment && (
                 <div className='fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50'>
-                  <PaymentDetails car={car} bookedSlot={bookedSlot} setShowPayment={setShowPayment} />
+                  <PaymentDetails car={car} bookedSlot={selectedSlots} setShowPayment={setShowPayment} />
                 </div>
               )}
 

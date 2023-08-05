@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import notfound from '../../images/notfound.gif';
 import instance from '../../utils/axios';
-import {
-    Button,
-    Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
-    Input,
-  } from "@material-tailwind/react";
-import Sidebar from "./Sidebar";
-
-function RenterBookings() {
+function AllBookings() {
   const [bookings, setBookings] = useState([]);
   const [user, setUser] = useState([]);
 
@@ -22,7 +14,6 @@ function RenterBookings() {
   
   const userData = JSON.parse(localStorage.getItem('user'));
   const userId = userData.userID
-  console.log(userId)
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
@@ -32,7 +23,7 @@ function RenterBookings() {
 
   }, []);
 
-  async function getbookings(userId) {
+  async function getbookings() {
     try {
       const token = localStorage.getItem('token');
       const userData = JSON.parse(localStorage.getItem('user'));
@@ -41,7 +32,7 @@ function RenterBookings() {
         // Use the global Axios instance directly here
         instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       }
-      const response = await instance.get(`/payment/renterbookings/?user=${userId}`);
+      const response = await instance.get(`/payment/allbookings/`);
       setBookings(response.data);
     } catch (error) {
       console.error('could not fetch data', error);
@@ -49,33 +40,13 @@ function RenterBookings() {
     }
   }
   useEffect(() => {
-    if (user) {
-      getbookings();
-    }
-  }, [user]);
-
-  const handleStatusUpdate = async (bookingId, newStatus) => {
-    try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  
+    if (userData.is_admin) {
+        getbookings();
       }
+  }, []);
 
-      // API endpoint for updating status
-      const response = await instance.put(`/payment/updatebooking/${bookingId}/`, {
-        status: newStatus,
-      });
-
-      // Handle success
-      toast.success('Status updated successfully');
-      // Refresh bookings after successful status update
-      getbookings();
-    } catch (error) {
-      console.error('could not update status', error);
-      console.error('API error response:', error.response);
-    }
-  };
-
+ 
   
 
   const handleSearch = () => {
@@ -88,18 +59,16 @@ function RenterBookings() {
   const filteredbookings = handleSearch();
 
   return (
-    <div className="">
+    <div className="flex h-full bg-acontent">
     <Sidebar />
-    <div className='flex h-full bg-acontent mt-3'>
-      <Toaster position='top-center' reverseOrder={false} limit={1} />
-
+  
       <div className='px-5 w-full h-auto min-h-screen mx-5 mt-2 py-8  flex flex-col place-content-start place-items-center bg-white shadow-xl rounded-xl'>
         <div className='w-full h-screen px-3 '>
           <div className="w-full p-5 flex justify-between">
-            <h1 className='  text-3xl text-start  ms-4'>My Bookings</h1>
+            <h1 className='  text-3xl text-start  ms-4'>Bookings</h1>
             <input
               type="text"
-              placeholder='&#x1F50D; Search for bookings'
+              placeholder='&#x1F50D; Search '
               className="border border-primaryBlue border-solid focus:outline-none px-2 w-1/5 rounded-lg "
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -111,31 +80,48 @@ function RenterBookings() {
                 <tr>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Car Name</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Booking date</th>
+                  <th scope="col" className="px-6 py-4 font-large text-gray-900">Time</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Amount</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Status</th>
-                  <th scope="col" className="px-6 py-4 font-large text-gray-900">Update</th>
                 </tr>
               </thead>
               <tbody className='divide-y divide-gray-100 border-t border-gray-100'>
                 {bookings?.length > 0 ? (
                   bookings?.map((booking, index) => (
                     <tr className='hover:bg-gray-50' key={index}>
-                      <td className='px-6 py-4'>
-                        <p>
-                          <div>{booking.car.name}</div>
-                        </p>
-                      </td>
-                      {/* ...Your other table data cells... */}
+                    <td className='px-6 py-4'>
+                    <p>
+                    <div>{booking.car.name}</div>
+
+                    </p>
+                  </td>{/* ...Your other table data cells... */}
                       <td className='px-6 py-4'>
                         <p>
                           {new Date(booking.booking_date).toLocaleDateString()}
                         </p>
                       </td>
-                     
                       <td className='px-6 py-4'>
                         <p>
-                        <div>{(booking.car.price_per_day * 0.9).toFixed(2)} </div>
-                         
+                          {new Date(
+                            `01/01/2000 ${booking.slot.start_time}`
+                          ).toLocaleTimeString([], {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true,
+                          })}
+                          -
+                          {new Date(
+                            `01/01/2000 ${booking.slot.end_time}`
+                          ).toLocaleTimeString([], {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true,
+                          })}
+                        </p>
+                      </td>
+                      <td className='px-6 py-4'>
+                        <p>
+                        <div>{booking.car.price_per_day * 0.1}Rs</div>
                         </p>
                       </td>
                       <td className='px-6 py-4'>
@@ -148,21 +134,9 @@ function RenterBookings() {
                                 : 'text-green-500'
                             }
                           >
-                            {booking.status.toUpperCase()}
+                            {booking.status}
                           </div>
                         </p>
-                      </td>
-                      <td className='px-6 py-4'>
-                        {/* Select input to update status */}
-                        <select
-                          value={booking.status}
-                          onChange={(e) => handleStatusUpdate(booking.id, e.target.value)}
-                        >
-                          <option value='pending'>Pending</option>
-                          <option value='approved'>Approved</option>
-                          <option value='rejected'>Rejected</option>
-                          <option value='complete'>Complete</option>
-                        </select>
                       </td>
                       {/* ...Your other table data cells... */}
                     </tr>
@@ -183,9 +157,8 @@ function RenterBookings() {
         </div>
       </div>
     </div>
-    </div>
   );
   
 }
 
-export default RenterBookings;
+export default AllBookings;
