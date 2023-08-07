@@ -46,12 +46,36 @@ function Bookings() {
     }
   }, [user]);
 
- 
+  const handleStatusUpdate = async (bookingId, newStatus) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      }
+      const statusToUpdate = newStatus || 'cancelled';
+
+      // API endpoint for updating status
+      const response = await instance.put(`/payment/cancelbooking/${bookingId}/`, {
+        status: statusToUpdate,
+
+      });
+
+      // Handle success
+      toast.success('Status updated successfully');
+      // Refresh bookings after successful status update
+      getbookings();
+    } catch (error) {
+      console.error('could not update status', error);
+      console.error('API error response:', error.response);
+    }
+  };
+
+  
   
 
   const handleSearch = () => {
-    const filteredbookings = bookings.filter(appointment =>
-      appointment?.patient?.username.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredbookings = bookings.filter(booking =>
+      booking?.car?.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     return filteredbookings;
   };
@@ -85,11 +109,13 @@ function Bookings() {
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Booking date</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Amount</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Status</th>
+                  <th scope="col" className="px-6 py-4 font-large text-gray-900">Cancel Order</th>
+
                 </tr>
               </thead>
               <tbody className='divide-y divide-gray-100 border-t border-gray-100'>
-                {bookings?.length > 0 ? (
-                  bookings?.map((booking, index) => (
+                {filteredbookings?.length > 0 ? (
+                  filteredbookings?.map((booking, index) => (
                     <tr className='hover:bg-gray-50' key={index}>
                     <td className='px-6 py-4'>
                     <p>
@@ -113,7 +139,8 @@ function Bookings() {
                           <div
                             className={
                               booking.status === 'pending' ||
-                              booking.status === 'rejected'
+                              booking.status === 'rejected' ||
+                              booking.status === 'cancelled'
                                 ? 'text-red-500'
                                 : 'text-green-500'
                             }
@@ -122,6 +149,25 @@ function Bookings() {
                           </div>
                         </p>
                       </td>
+                      <td className='px-6 py-4'>
+  {/* Cancel Order button */}
+  {booking.status === 'pending' || booking.status === 'approved' ? (
+    <button
+      className='bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+      onClick={() => handleStatusUpdate(booking.id)}
+    >
+      Cancel Order
+    </button>
+  ) : (
+    <button
+      className='bg-gray-300 text-gray-600 font-semibold py-2 px-4 rounded cursor-not-allowed'
+      disabled
+    >
+      Cancel Order
+    </button>
+  )}
+</td>
+
                       {/* ...Your other table data cells... */}
                     </tr>
                   ))

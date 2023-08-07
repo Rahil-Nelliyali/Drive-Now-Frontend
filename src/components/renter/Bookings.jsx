@@ -79,8 +79,8 @@ function RenterBookings() {
   
 
   const handleSearch = () => {
-    const filteredbookings = bookings.filter(appointment =>
-      appointment?.patient?.username.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredbookings = bookings.filter(booking =>
+      booking?.car?.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     return filteredbookings;
   };
@@ -117,8 +117,8 @@ function RenterBookings() {
                 </tr>
               </thead>
               <tbody className='divide-y divide-gray-100 border-t border-gray-100'>
-                {bookings?.length > 0 ? (
-                  bookings?.map((booking, index) => (
+                {filteredbookings?.length > 0 ? (
+                  filteredbookings?.map((booking, index) => (
                     <tr className='hover:bg-gray-50' key={index}>
                       <td className='px-6 py-4'>
                         <p>
@@ -143,7 +143,8 @@ function RenterBookings() {
                           <div
                             className={
                               booking.status === 'pending' ||
-                              booking.status === 'rejected'
+                              booking.status === 'rejected' ||
+                              booking.status === 'cancelled'
                                 ? 'text-red-500'
                                 : 'text-green-500'
                             }
@@ -153,17 +154,21 @@ function RenterBookings() {
                         </p>
                       </td>
                       <td className='px-6 py-4'>
-                        {/* Select input to update status */}
-                        <select
-                          value={booking.status}
-                          onChange={(e) => handleStatusUpdate(booking.id, e.target.value)}
-                        >
-                          <option value='pending'>Pending</option>
-                          <option value='approved'>Approved</option>
-                          <option value='rejected'>Rejected</option>
-                          <option value='complete'>Complete</option>
-                        </select>
-                      </td>
+  {booking.status === 'cancelled' ? (
+    <span className='text-red-500'>Booking cancelled by customer</span>
+  ) : (
+    <select
+      value={booking.status}
+      onChange={(e) => handleStatusUpdate(booking.id, e.target.value)}
+    >
+      <option value='pending' disabled={booking.status !== 'pending'}>Pending</option>
+      <option value='approved' disabled={booking.status === 'rejected' || booking.status === 'complete'}>Approved</option>
+      <option value='rejected' disabled={booking.status === 'approved' || booking.status === 'complete'}>Rejected</option>
+      <option value='complete' disabled={booking.status !== 'approved'}>Complete</option>
+    </select>
+  )}
+</td>
+
                       {/* ...Your other table data cells... */}
                     </tr>
                   ))

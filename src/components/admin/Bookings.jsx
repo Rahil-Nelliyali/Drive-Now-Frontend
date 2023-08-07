@@ -80,7 +80,6 @@ function AllBookings() {
                 <tr>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Car Name</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Booking date</th>
-                  <th scope="col" className="px-6 py-4 font-large text-gray-900">Time</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Amount</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Status</th>
                 </tr>
@@ -100,25 +99,7 @@ function AllBookings() {
                           {new Date(booking.booking_date).toLocaleDateString()}
                         </p>
                       </td>
-                      <td className='px-6 py-4'>
-                        <p>
-                          {new Date(
-                            `01/01/2000 ${booking.slot.start_time}`
-                          ).toLocaleTimeString([], {
-                            hour: 'numeric',
-                            minute: '2-digit',
-                            hour12: true,
-                          })}
-                          -
-                          {new Date(
-                            `01/01/2000 ${booking.slot.end_time}`
-                          ).toLocaleTimeString([], {
-                            hour: 'numeric',
-                            minute: '2-digit',
-                            hour12: true,
-                          })}
-                        </p>
-                      </td>
+                     
                       <td className='px-6 py-4'>
                         <p>
                         <div>{booking.car.price_per_day * 0.1}Rs</div>
@@ -129,12 +110,13 @@ function AllBookings() {
                           <div
                             className={
                               booking.status === 'pending' ||
-                              booking.status === 'rejected'
+                              booking.status === 'rejected' ||
+                              booking.status === 'cancelled' 
                                 ? 'text-red-500'
                                 : 'text-green-500'
                             }
                           >
-                            {booking.status}
+                            {booking.status.toUpperCase()}
                           </div>
                         </p>
                       </td>
