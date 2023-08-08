@@ -2,8 +2,6 @@ import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
-import jwtDecode from 'jwt-decode';
-import { getLocal } from '../../helpers/auth'
 
 function PaymentPage(props) {
   const [user,setUser] =useState(null)
@@ -88,8 +86,6 @@ const {car,bookedSlot} = props
   
 
     var options = {
-      // key_id: process.env.REACT_APP_PUBLIC_KEY, 
-      // key_secret: process.env.REACT_APP_SECRET_KEY,
       key_id: 'rzp_test_t7mDyb37sLmED8',
       key_secret: '4YMuQlfTvyvuyHgdtpyoxkDW',
    
@@ -106,7 +102,7 @@ const {car,bookedSlot} = props
         handlePaymentSuccess(response);
       },
       prefill: {
-        name: "aji",
+        name: "username",
         email: "User's email",
         contact: "User's phone",
       },
@@ -125,7 +121,7 @@ const {car,bookedSlot} = props
   return (
     <div className=" h-1/6 " >
       <button onClick={showRazorpay} className="bg-yellow-500 text-black py-2 px-4 rounded-md border-black mt-4">
-        Pay with razorpay
+        Confirm Booking
       </button>
     </div>
   );

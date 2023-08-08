@@ -9,13 +9,16 @@ import {
     DialogBody,
     DialogFooter,
     Input,
+    closeDialog,
   } from "@material-tailwind/react";
 import Sidebar from "./Sidebar";
+import LateChargesDialog from './LateCharges';
 
-function RenterBookings() {
+
+export default function RenterBookings() {
   const [bookings, setBookings] = useState([]);
   const [user, setUser] = useState([]);
-
+  const [lateCharges, setLateCharges] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
 
   const navigate = useNavigate();
@@ -54,29 +57,66 @@ function RenterBookings() {
     }
   }, [user]);
 
+  const handleStatusChange = (bookingId, newStatus) => {
+    setLateCharges(0); // Reset late charges when changing status
+    handleStatusUpdate(bookingId, newStatus);
+  };
+  
+  const handleLateChargesUpdate = async (bookingId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      }
+  
+      // Update late return charges if status is 'late'
+      await instance.put(`/payment/updatebooking/${bookingId}/`, {
+        status: 'late',
+        late_return_charges: lateCharges,
+      });
+      toast.success('Late return charges added successfully');
+  
+      // Refresh bookings after successful update
+      getbookings(userId);
+    } catch (error) {
+      console.error('could not update late charges', error);
+      console.error('API error response:', error.response);
+    }
+  };
+  
+
   const handleStatusUpdate = async (bookingId, newStatus) => {
     try {
       const token = localStorage.getItem('token');
       if (token) {
         instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       }
-
-      // API endpoint for updating status
-      const response = await instance.put(`/payment/updatebooking/${bookingId}/`, {
-        status: newStatus,
-      });
-
-      // Handle success
-      toast.success('Status updated successfully');
-      // Refresh bookings after successful status update
-      getbookings();
+  
+      if (newStatus === 'late') {
+        // Update late return charges if status is 'late'
+        await instance.put(`/payment/updatebooking/${bookingId}/`, {
+          status: newStatus,
+          late_return_charges: lateCharges,
+        });
+        toast.success('Late return charges added successfully');
+      } else {
+        // Update status without late return charges
+        await instance.put(`/payment/updatebooking/${bookingId}/`, {
+          status: newStatus,
+        });
+        toast.success('Status updated successfully');
+      }
+  
+      // Refresh bookings after successful update
+      getbookings(userId);
     } catch (error) {
       console.error('could not update status', error);
       console.error('API error response:', error.response);
     }
   };
-
   
+
+ 
 
   const handleSearch = () => {
     const filteredbookings = bookings.filter(booking =>
@@ -112,6 +152,10 @@ function RenterBookings() {
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Car Name</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Booking date</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Amount</th>
+                 
+                    <th scope="col" className="px-6 py-4 font-large text-gray-900">Late Return Fees</th>
+                 
+                  
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Status</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Update</th>
                 </tr>
@@ -138,13 +182,30 @@ function RenterBookings() {
                          
                         </p>
                       </td>
+
+                      <td className='px-6 py-4'>
+                      <p>
+                        <div>
+                          {booking.late_return_charges > 0 ? (
+                            <span className='text-red-500'>
+                              Late Return Charges: {booking.late_return_charges}
+                            </span>
+                          ) : (
+                            <span className='text-green-500'>Nil</span>
+                          )}
+                        </div>
+                      </p>
+                    </td>
+                    
+
                       <td className='px-6 py-4'>
                         <p>
                           <div
                             className={
                               booking.status === 'pending' ||
                               booking.status === 'rejected' ||
-                              booking.status === 'cancelled'
+                              booking.status === 'cancelled'||
+                              booking.status === 'late'
                                 ? 'text-red-500'
                                 : 'text-green-500'
                             }
@@ -154,20 +215,44 @@ function RenterBookings() {
                         </p>
                       </td>
                       <td className='px-6 py-4'>
-  {booking.status === 'cancelled' ? (
-    <span className='text-red-500'>Booking cancelled by customer</span>
-  ) : (
-    <select
-      value={booking.status}
-      onChange={(e) => handleStatusUpdate(booking.id, e.target.value)}
-    >
-      <option value='pending' disabled={booking.status !== 'pending'}>Pending</option>
-      <option value='approved' disabled={booking.status === 'rejected' || booking.status === 'complete'}>Approved</option>
-      <option value='rejected' disabled={booking.status === 'approved' || booking.status === 'complete'}>Rejected</option>
-      <option value='complete' disabled={booking.status !== 'approved'}>Complete</option>
-    </select>
-  )}
-</td>
+                      {booking.status === 'cancelled' ? (
+                        <span className='text-red-500'>Booking cancelled by customer</span>
+                      ) : (
+                        <div>
+                          <select
+                            value={booking.status}
+                            onChange={(e) => handleStatusChange(booking.id, e.target.value)}
+                          >
+                            <option value='pending'>Pending</option>
+                            <option value='approved'>Approved</option>
+                            <option value='rejected'>Rejected</option>
+                            <option value='complete'>Complete</option>
+                            <option value='picked_up'>Vehicle Picked Up</option>
+                            <option value='returned'>Vehicle Returned</option>
+                            <option value='late'>Late Returned</option>
+                          </select>
+                          {booking.status === 'late' && (
+                            <div className="flex flex-col items-center mt-4">
+                              <Input
+                                type="number"
+                                placeholder="Late Charges"
+                                value={lateCharges}
+                                onChange={(e) => setLateCharges(e.target.value)}
+                                className=" py-2 px-4 border rounded focus:outline-none focus:ring focus:border-blue-300"
+                              />
+                              <Button
+                                onClick={() => handleLateChargesUpdate(booking.id)}
+                                className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                              >
+                                Update Late Charges
+                              </Button>
+                            </div>
+                          )}
+                          
+                        </div>
+                      )}
+                    </td>
+                    
 
                       {/* ...Your other table data cells... */}
                     </tr>
@@ -184,7 +269,14 @@ function RenterBookings() {
                 )}
               </tbody>
             </table>
-          </div>
+            {filteredbookings?.map((booking) => (
+              <LateChargesDialog
+                key={booking.id}
+                bookingId={booking.id}
+                onClose={() => {}}
+              />
+            ))}
+             </div>
         </div>
       </div>
     </div>
@@ -192,5 +284,3 @@ function RenterBookings() {
   );
   
 }
-
-export default RenterBookings;

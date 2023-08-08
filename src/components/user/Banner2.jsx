@@ -1,8 +1,7 @@
-
-
 import React from 'react';
 import carImage from '../../images/Banner2.jpg';
-import './Banner.css'; // Create a CSS file for custom styles and animations
+import './Banner.css';
+import { Link } from 'react-router-dom';
 
 function Banner2() {
   return (
@@ -13,7 +12,7 @@ function Banner2() {
           <p className='banner-description'>
           Explore our fleet of top-notch vehicles for the journey of a lifetime. From scenic getaways to business travels, we have the keys to unforgettable experiences. Start your adventure now!
           </p>
-          <button className='explore-btn'>Book Now</button>
+          <Link to='/home-list-car' className='explore-btn'>Book Now</Link>
         </div>
         <div className='banner-image'>
           <img src={carImage} alt='Car Rental' />

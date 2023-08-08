@@ -17,7 +17,7 @@ import CreateCar from './components/renter/CreateCar'
 import CarDetail from "./components/renter/DetailedCar";
 import CategoryRenter from './components/renter/CategoryRenter'
 import CreateCategory from './components/renter/CreateCategory'
-
+import Profile from './components/user/Profile';
 
 import PaymentPage from './components/user/Payment'
 import PaymentSuccessPage from './components/user/PaymentSuccess'
@@ -41,6 +41,7 @@ function App() {
           <Route path='/payment' exact Component={PaymentPage} />
           <Route path='/success' exact Component={PaymentSuccessPage} />
           <Route path='/mybookings' exact Component={Bookings} />
+          <Route path='/profile' exact Component={Profile} />
 
 
 

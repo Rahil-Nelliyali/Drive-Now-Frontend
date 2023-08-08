@@ -72,6 +72,9 @@ const CreateSlot = () => {
           console.error(error);
           if (error.response && error.response.status === 403) {
             toast.error('You do not have permission to create a slot.');
+          }
+          else if (error.response && error.response.status === 400) {
+            toast.error('Slot already exists.');
           } else {
             toast.error('Failed to create slot. Please try again later.');
           }

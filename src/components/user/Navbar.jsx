@@ -1,9 +1,7 @@
 import React from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { BsCart3 } from 'react-icons/bs';
 import { Link, useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
-import { getLocal } from '../../helpers/auth';
 import { useState } from 'react';
 import { toast, Toaster } from "react-hot-toast";
 
@@ -68,7 +66,7 @@ function NavBar() {
             </Link>
             <Link to='/profile'>
               <li className='px-1 list-none text-white hover:text-customColorC transition duration-300'>
-                Edit profile
+                Profile
               </li>
             </Link>
           </>
@@ -78,9 +76,7 @@ function NavBar() {
             Cars
           </li>
         </Link>
-        <Link to='/cart'>
-          <BsCart3 className='cursor-pointer text-white hover:text-customColorC transition duration-300' />
-        </Link>
+       
       </div>
 
       {user_auth ? (

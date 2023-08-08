@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams} from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
+import { toast, Toaster } from "react-hot-toast";
 import Navbar from './Navbar';
 import instance from '../../utils/axios';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import PaymentDetails from './PaymentDetails';
+import { useNavigate } from 'react-router-dom';
 
 function CarDetail() {
 
@@ -21,6 +22,7 @@ function CarDetail() {
   const [showDate, setShowDate] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [bookedSlot, setBookedSlot] = useState([]);
+  const navigate = useNavigate();
   
 
   async function getSlotsForCar(carId) {
@@ -35,7 +37,10 @@ function CarDetail() {
       return response.data;
     } catch (error) {
       console.error('Failed to fetch slots:', error);
-      return [];
+      if (error.response && error.response.status === 401) {
+        toast.error("Please login first");
+        navigate('/login'); // Redirect to your login page route
+      }
     }
   }
 
@@ -53,6 +58,10 @@ function CarDetail() {
         setSlots(slotsData);
       } catch (error) {
         console.error('Failed to fetch car details:', error);
+        if (error.response && error.response.status === 401) {
+          // Unauthorized, redirect to login page
+          navigate('/login'); // Redirect to your login page route
+        }
       }
       setLoading(false);
     }
@@ -137,7 +146,7 @@ function CarDetail() {
                   className="bg-blue-500 text-white py-2 px-4 rounded-md ms-1 mt-2"
                   onClick={toggleDate}
                 >
-                  Book Appointment
+                  Book Now!
                 </button>
               ) : (
                 <div className='mb-4'>

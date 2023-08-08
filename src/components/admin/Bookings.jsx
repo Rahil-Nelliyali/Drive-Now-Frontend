@@ -111,7 +111,8 @@ function AllBookings() {
                             className={
                               booking.status === 'pending' ||
                               booking.status === 'rejected' ||
-                              booking.status === 'cancelled' 
+                              booking.status === 'cancelled' ||
+                              booking.status === 'late' 
                                 ? 'text-red-500'
                                 : 'text-green-500'
                             }

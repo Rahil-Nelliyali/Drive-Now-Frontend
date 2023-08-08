@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import notfound from '../../images/notfound.gif';
 import instance from '../../utils/axios';
+import Swal from 'sweetalert2';
+
 function Bookings() {
   const [bookings, setBookings] = useState([]);
   const [user, setUser] = useState([]);
@@ -37,7 +39,11 @@ function Bookings() {
       setBookings(response.data);
     } catch (error) {
       console.error('could not fetch data', error);
-      console.error('API error response:', error.response); //
+      console.error('API error response:', error.response);
+      if (error.response && error.response.status === 401) {
+        // Unauthorized, redirect to login page
+        navigate('/login'); // Redirect to your login page route
+      } //
     }
   }
   useEffect(() => {
@@ -67,6 +73,10 @@ function Bookings() {
     } catch (error) {
       console.error('could not update status', error);
       console.error('API error response:', error.response);
+      if (error.response && error.response.status === 401) {
+        // Unauthorized, redirect to login page
+        navigate('/login'); // Redirect to your login page route
+      }
     }
   };
 
@@ -109,6 +119,8 @@ function Bookings() {
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Booking date</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Amount</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Status</th>
+                  <th scope="col" className="px-6 py-4 font-large text-gray-900">Extra charges</th>
+          
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Cancel Order</th>
 
                 </tr>
@@ -140,7 +152,8 @@ function Bookings() {
                             className={
                               booking.status === 'pending' ||
                               booking.status === 'rejected' ||
-                              booking.status === 'cancelled'
+                              booking.status === 'cancelled' ||
+                              booking.status === 'late'
                                 ? 'text-red-500'
                                 : 'text-green-500'
                             }
@@ -150,24 +163,50 @@ function Bookings() {
                         </p>
                       </td>
                       <td className='px-6 py-4'>
-  {/* Cancel Order button */}
-  {booking.status === 'pending' || booking.status === 'approved' ? (
-    <button
-      className='bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
-      onClick={() => handleStatusUpdate(booking.id)}
-    >
-      Cancel Order
-    </button>
-  ) : (
-    <button
-      className='bg-gray-300 text-gray-600 font-semibold py-2 px-4 rounded cursor-not-allowed'
-      disabled
-    >
-      Cancel Order
-    </button>
-  )}
-</td>
-
+                      <p>
+                        <div>
+                          {booking.late_return_charges > 0 ? (
+                            <span className='text-red-500'>
+                              Late Return Charges: {booking.late_return_charges}
+                            </span>
+                          ) : (
+                            <span className='text-green-500'>Nil</span>
+                          )}
+                        </div>
+                      </p>
+                    </td>
+                    <td className='px-6 py-4'>
+                    {/* Cancel Order button */}
+                    {booking.status === 'pending' || booking.status === 'approved' ? (
+                      <button
+                        className='bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+                        onClick={() => {
+                          Swal.fire({
+                            title: 'Cancel Order',
+                            text: 'Are you sure you want to cancel this order?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, cancel it!',
+                            cancelButtonText: 'No, keep it'
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              // Proceed with canceling the order
+                              handleStatusUpdate(booking.id);
+                            }
+                          });
+                        }}
+                      >
+                        Cancel Order
+                      </button>
+                    ) : (
+                      <button
+                        className='bg-gray-300 text-gray-600 font-semibold py-2 px-4 rounded cursor-not-allowed'
+                        disabled
+                      >
+                        Cancel Order
+                      </button>
+                    )}
+                  </td>
                       {/* ...Your other table data cells... */}
                     </tr>
                   ))
