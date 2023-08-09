@@ -86,7 +86,7 @@ function AllBookings() {
               </thead>
               <tbody className='divide-y divide-gray-100 border-t border-gray-100'>
                 {bookings?.length > 0 ? (
-                  bookings?.map((booking, index) => (
+                  bookings?.slice().sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date)).map((booking, index) => (
                     <tr className='hover:bg-gray-50' key={index}>
                     <td className='px-6 py-4'>
                     <p>
@@ -96,7 +96,7 @@ function AllBookings() {
                   </td>{/* ...Your other table data cells... */}
                       <td className='px-6 py-4'>
                         <p>
-                          {new Date(booking.booking_date).toLocaleDateString()}
+                          {new Date(booking.slot.date).toLocaleDateString()}
                         </p>
                       </td>
                      

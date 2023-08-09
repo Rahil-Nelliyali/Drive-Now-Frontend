@@ -264,7 +264,7 @@ console.log(formData,'asdfghj');
       <div className="px-5 w-full h-auto min-h-screen mx-5 mt-2 py-8 font-poppins flex flex-col place-content-start place-items-center bg-white shadow-xl rounded-xl">
         <div className="w-full h-screen px-3 font-poppins">
           <h1 className="text-3xl font-bold text-center text-custom-red mt-10 mb-6">Your Cars</h1>
-          <div className="w-full p-5">
+          <div className="w-full p-5 mb-10">
             <button
               className="bg-blue-600 text-white rounded px-4 py-2 float-right transition duration-300 ease-in-out transform hover:scale-110 hover:bg-blue-700 focus:outline-none"
               onClick={handleButtonClick}
@@ -292,7 +292,7 @@ console.log(formData,'asdfghj');
                     Price
                   </th>
                   <th scope="col" className="px-6 py-4 font-semibold text-gray-900">
-                    Category
+                    Location
                   </th>
                   <th scope="col" className="px-6 py-4 font-semibold text-gray-900">
                     Actions

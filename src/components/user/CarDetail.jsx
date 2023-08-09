@@ -6,7 +6,7 @@ import instance from '../../utils/axios';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import PaymentDetails from './PaymentDetails';
 import { useNavigate } from 'react-router-dom';
-
+import './loader.css'
 function CarDetail() {
 
 
@@ -78,6 +78,7 @@ function CarDetail() {
     setDate( e.target.value)
     const selected = slots.filter((slot) => slot.date ===  e.target.value);
     setSelectedSlots(selected);
+    console.log(selectedSlots.length)
   };
   
 
@@ -112,7 +113,15 @@ function CarDetail() {
 
  
   
- 
+  const [value, setValue] = useState({ 
+    startDate: null ,
+    endDate: null 
+    }); 
+    
+    const handleValueChange = (newValue) => {
+    console.log("newValue:", newValue); 
+    setValue(newValue); 
+    } 
 
 
  
@@ -126,7 +135,9 @@ function CarDetail() {
       </div>
       <div className='p-5 w-full h-full min-h-screen'>
         {loading ? (
-          <h1 className='text-3xl font-bold text-center text-primaryBlue'>Loading...</h1>
+          <div className='flex flex-col items-center justify-center align-center h-full'>
+           
+            <div class="jelly  flex items-center justify-center align-center"></div> </div>
         ) : car ? (
           <div className='bg-white rounded-lg shadow-lg p-6'>
             <div className='relative group'>
@@ -159,54 +170,57 @@ function CarDetail() {
                     min={new Date().toISOString().split('T')[0]}
                     className='mt-3 border-gray-300 border-2 rounded-md py-2 px-3'
                   />
+                  
                   </div>
                   )
                 }
                   
                     
-      {showDate && selectedSlots?.length > 0 && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 mt-3">
-          <div className="bg-white rounded-lg p-6">
-            <div className="flex place-content-end">
-              <AiOutlineCloseCircle
-                className="text-end text-gray-500"
-                onClick={() => {
-                  setShowDate(false);
-                  setSelectedSlots([]);
-                  setDate('');
-                }}
-              />
-            </div>
-      
-            <h5 className="mt-1 font-serif text-xl">Available Slots:</h5>
-            <div className="grid grid-cols-3 gap-4 mt-4">
-            {selectedSlots.map((slot) => {
-              const startTime = slot.date;
-            
-              return (
-                <button
-                  key={slot.id}
-                  className={`bg-blue-500 text-white py-2 px-4 rounded-md shadow-2xl ${slot.is_booked ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  id={slot.id}
-                  onClick={() => !slot.is_booked && handleClick(slot.id)}
-                  disabled={slot.is_booked}
-                >
-                  {startTime}
-                </button>
-              );
-            })}
-            </div>
-            <div className="w-full flex place-content-center">
-              <button
-                className="bg-yellow-500 text-black py-2 px-4 rounded-md border-black mt-4"
-                onClick={() => setShowPayment(true)}
-              >
-                Book
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+                {showDate && selectedSlots?.length > 0 && (
+                  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 mt-3">
+                    <div className="bg-white rounded-lg p-6">
+                      <div className="flex place-content-end">
+                        <AiOutlineCloseCircle
+                          className="text-end text-gray-500"
+                          onClick={() => {
+                            setShowDate(false);
+                            setSelectedSlots([]);
+                            setDate('');
+                          }}
+                        />
+                      </div>
+                
+                      <h5 className="mt-1 font-serif text-xl">Available Slots:</h5>
+                      <div className="grid grid-cols-3 gap-4 mt-4">
+                        {selectedSlots.map((slot) => {
+                          const startTime = slot.date;
+                
+                          return (
+                            <button
+                              key={slot.id}
+                              className={`bg-blue-500 text-white py-2 px-4 rounded-md shadow-2xl ${slot.is_booked ? 'opacity-50 cursor-not-allowed' : ''}`}
+                              id={slot.id}
+                              onClick={() => !slot.is_booked && handleClick(slot.id)}
+                              disabled={slot.is_booked}
+                            >
+                              {startTime}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <div className="w-full flex place-content-center">
+                        <button 
+                          className={`bg-yellow-500 text-black py-2 px-4 rounded-md border-black mt-4 ${selectedSlots.every(slot => slot.is_booked) || !date ? 'cursor-not-allowed opacity-50' : ''}`}
+                          onClick={() => setShowPayment(true)}
+                          disabled={selectedSlots.every(slot => slot.is_booked) || !date}
+                        >
+                          Book
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
       
               {showPayment && (
                 <div className='fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50'>

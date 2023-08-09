@@ -108,12 +108,12 @@ function Categories() {
       <Sidebar />
       <div className="px-5 w-full h-auto min-h-screen mx-5 mt-2  py-8 font-poppins flex flex-col place-content-start place-items-center bg-white shadow-xl rounded-xl">
         <div className="w-full h-screen px-3  font-poppins">
-          <div className="w-full p-5">
+          <div className="w-full p-5 mb-10">
             <Button
               className="bg-blue-gray-900 float-right"
               onClick={() => navigate("/createcategory")}
             >
-              Create Category
+              Add Location
             </Button>
           </div>
           <Toaster position="top-center" reverseOrder={false}></Toaster>
@@ -122,10 +122,10 @@ function Categories() {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">
-                    Category Name
+                    Location Name
                   </th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">
-                    Category Image
+                    Location Image
                   </th>
                  
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">

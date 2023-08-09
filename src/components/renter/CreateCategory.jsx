@@ -35,7 +35,7 @@ function CreateCategory() {
       });
 
       if (res.status === 201) {
-        toast.success("Category created");
+        toast.success("Location created");
         navigate("/categoryrenter");
       } else {
         const errorData = await res.json();
@@ -59,13 +59,13 @@ function CreateCategory() {
         onSubmit={handleSubmit}
         encType="multipart/form-data"
       >
-        <h1 className="text-3xl font-bold mb-6">CREATE CATEGORY</h1>
+        <h1 className="text-3xl font-bold mb-6">Add Location</h1>
 
         <input
           className="bg-gray-200 h-14 w-full border-2 mt-2 placeholder-gray-600 outline-none text-black px-4 rounded-md"
           type="text"
           name="category"
-          placeholder="Category Name"
+          placeholder="Location Name"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           required
@@ -94,7 +94,7 @@ function CreateCategory() {
           className="bg-custom-red mt-6 h-10 w-full text-white font-semibold rounded-md hover:bg-red-700 transition-colors"
           type="submit"
         >
-          Create
+          ADD
         </button>
       </form>
     </div>

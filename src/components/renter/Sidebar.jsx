@@ -47,7 +47,7 @@ export default function Sidebar() {
           activeClassName='text-customColorC'
         >
         <FaFolder size={45} className='px-3' />
-        <h3 className='font-semibold'>Category</h3>
+        <h3 className='font-semibold'>Location</h3>
         </NavLink>
         <NavLink
           to='/renterbookings'

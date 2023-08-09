@@ -1,10 +1,9 @@
-import React from 'react';
-import { AiOutlineSearch } from 'react-icons/ai';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
-import { useState } from 'react';
 import { toast, Toaster } from "react-hot-toast";
-
+import { AiOutlineSearch, AiOutlineEnvironment } from 'react-icons/ai';
+import instance from '../../utils/axios';
 function NavBar() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
@@ -50,6 +49,9 @@ function NavBar() {
           />
         </div>
       </div>
+
+      
+
 
       <div className='flex gap-3 items-center'>
         <Link to='/'>

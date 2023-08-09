@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 function Bookings() {
   const [bookings, setBookings] = useState([]);
   const [user, setUser] = useState([]);
+  const [cancellationInProgress, setCancellationInProgress] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -54,6 +55,7 @@ function Bookings() {
 
   const handleStatusUpdate = async (bookingId, newStatus) => {
     try {
+      setCancellationInProgress(true); 
       const token = localStorage.getItem('token');
       if (token) {
         instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -77,6 +79,8 @@ function Bookings() {
         // Unauthorized, redirect to login page
         navigate('/login'); // Redirect to your login page route
       }
+    } finally {
+      setCancellationInProgress(false); 
     }
   };
 
@@ -127,7 +131,7 @@ function Bookings() {
               </thead>
               <tbody className='divide-y divide-gray-100 border-t border-gray-100'>
                 {filteredbookings?.length > 0 ? (
-                  filteredbookings?.map((booking, index) => (
+                  filteredbookings?.slice().sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date)).map((booking, index) => (
                     <tr className='hover:bg-gray-50' key={index}>
                     <td className='px-6 py-4'>
                     <p>
@@ -137,7 +141,7 @@ function Bookings() {
                   </td>{/* ...Your other table data cells... */}
                       <td className='px-6 py-4'>
                         <p>
-                          {new Date(booking.booking_date).toLocaleDateString()}
+                          {new Date(booking.slot.date).toLocaleDateString()}
                         </p>
                       </td>
                       
@@ -179,25 +183,32 @@ function Bookings() {
                     {/* Cancel Order button */}
                     {booking.status === 'pending' || booking.status === 'approved' ? (
                       <button
-                        className='bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
-                        onClick={() => {
-                          Swal.fire({
-                            title: 'Cancel Order',
-                            text: 'Are you sure you want to cancel this order?',
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Yes, cancel it!',
-                            cancelButtonText: 'No, keep it'
-                          }).then((result) => {
-                            if (result.isConfirmed) {
-                              // Proceed with canceling the order
-                              handleStatusUpdate(booking.id);
-                            }
-                          });
-                        }}
-                      >
-                        Cancel Order
-                      </button>
+  className={`${
+    cancellationInProgress
+      ? 'bg-red-500 text-white font-semibold py-2 px-4 rounded cursor-not-allowed'
+      : 'bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+  }`}
+  onClick={() => {
+    if (!cancellationInProgress) {
+      Swal.fire({
+        title: 'Cancel Order',
+        text: 'Are you sure you want to cancel this order?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, cancel it!',
+        cancelButtonText: 'No, keep it'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Proceed with canceling the order
+          handleStatusUpdate(booking.id);
+        }
+      });
+    }
+  }}
+>
+  {cancellationInProgress ? 'Processing...' : 'Cancel Order'}
+</button>
+
                     ) : (
                       <button
                         className='bg-gray-300 text-gray-600 font-semibold py-2 px-4 rounded cursor-not-allowed'

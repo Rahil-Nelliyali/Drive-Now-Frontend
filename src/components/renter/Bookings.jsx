@@ -136,7 +136,7 @@ export default function RenterBookings() {
       <div className='px-5 w-full h-auto min-h-screen mx-5 mt-2 py-8  flex flex-col place-content-start place-items-center bg-white shadow-xl rounded-xl'>
         <div className='w-full h-screen px-3 '>
           <div className="w-full p-5 flex justify-between">
-            <h1 className='  text-3xl text-start  ms-4'>My Bookings</h1>
+            <h1 className='  text-3xl font-bold text-center text-custom-red '>My Bookings</h1>
             <input
               type="text"
               placeholder='&#x1F50D; Search for bookings'
@@ -162,7 +162,7 @@ export default function RenterBookings() {
               </thead>
               <tbody className='divide-y divide-gray-100 border-t border-gray-100'>
                 {filteredbookings?.length > 0 ? (
-                  filteredbookings?.map((booking, index) => (
+                  filteredbookings?.slice().sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date)).map((booking, index) => (
                     <tr className='hover:bg-gray-50' key={index}>
                       <td className='px-6 py-4'>
                         <p>
@@ -172,7 +172,7 @@ export default function RenterBookings() {
                       {/* ...Your other table data cells... */}
                       <td className='px-6 py-4'>
                         <p>
-                          {new Date(booking.booking_date).toLocaleDateString()}
+                          {new Date(booking.slot.date).toLocaleDateString()}
                         </p>
                       </td>
                      

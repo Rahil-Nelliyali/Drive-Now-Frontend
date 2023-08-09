@@ -1,5 +1,5 @@
 import React from 'react';
-import carRentalImage from '../../images/Banner.jpg';
+import carRentalImage from '../../images/Banner3.jpg';
 import './Banner2.css'; 
 import { Link } from 'react-router-dom';
 

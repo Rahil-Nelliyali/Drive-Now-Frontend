@@ -411,7 +411,7 @@ return (
 {/* Category */}
 <div className="space-y-4">
 <label className="block text-base" htmlFor="car">
-  Category
+  Location
 </label>
 <select
   className="w-full h-12 border-2 rounded-md px-4 bg-gray-200 border-gray-300 text-gray-800 outline-none focus:border-gray-400"
@@ -419,7 +419,7 @@ return (
   onChange={(e) => setCategory(e.target.value)}
   required
 >
-  <option value="">Select category</option>
+  <option value="">Select Location</option>
   {categoryList.map((category) => (
     <option key={category.id} value={category.id}>
       {category.name}

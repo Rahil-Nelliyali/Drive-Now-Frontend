@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function PaymentPage(props) {
   const [user,setUser] =useState(null)
+  const [paymentInProgress, setPaymentInProgress] = useState(false);
 
 useEffect(()=>{
   const userData = JSON.parse(localStorage.getItem("user"));
@@ -21,6 +22,7 @@ const {car,bookedSlot} = props
 // and it will confim if payment is successfull or not
   const handlePaymentSuccess = async (response) => {
     try {
+      setPaymentInProgress(true);
       let bodyData = new FormData();
 
       // we will send the response we've got from razorpay to the backend to validate the payment
@@ -37,6 +39,9 @@ const {car,bookedSlot} = props
         },
       })
         .then((res) => {
+          const paymentId = response.razorpay_payment_id;
+          console.log("Payment ID:", paymentId);
+
           console.log("Everything is OK!");
           history('/success')
 
@@ -48,6 +53,9 @@ const {car,bookedSlot} = props
         });
     } catch (error) {
       console.log(console.error());
+    }
+    finally {
+      setPaymentInProgress(false); // Reset the payment process
     }
   };
 
@@ -62,7 +70,6 @@ const {car,bookedSlot} = props
     const res = await loadScript();
 
     let bodyData = new FormData();
-    console.log(car.price_per_day,'fdofksfkd')
     // we will pass the amount and product name to the backend using form data
     bodyData.append("amount", car.price_per_day.toString());
     bodyData.append("name", car.renter.username);
@@ -120,9 +127,18 @@ const {car,bookedSlot} = props
 
   return (
     <div className=" h-1/6 " >
-      <button onClick={showRazorpay} className="bg-yellow-500 text-black py-2 px-4 rounded-md border-black mt-4">
-        Confirm Booking
-      </button>
+    <button
+    onClick={showRazorpay}
+    className={`${
+      paymentInProgress
+        ? 'bg-yellow-300 text-black py-2 px-4 rounded-md border-black mt-4 cursor-not-allowed'
+        : 'bg-yellow-500 text-black py-2 px-4 rounded-md border-black mt-4'
+    }`}
+    disabled={paymentInProgress}
+  >
+    {paymentInProgress ? 'Processing...' : 'Confirm Booking'}
+  </button>
+  
     </div>
   );
 }
