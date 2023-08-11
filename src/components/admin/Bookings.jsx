@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { toast, Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import notfound from '../../images/notfound.gif';
 import instance from '../../utils/axios';
 function AllBookings() {
   const [bookings, setBookings] = useState([]);

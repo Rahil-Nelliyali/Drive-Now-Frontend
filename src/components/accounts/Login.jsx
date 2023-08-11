@@ -1,12 +1,7 @@
 import React, { useState } from "react";
-
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
-import login, { getLocal } from "../../helpers/auth";
 import Loginimage from "../../images/logo.png";
-import jwt_decode from 'jwt-decode';
-import { useEffect } from 'react';
-import axios from 'axios';
 import instance from '../../utils/axios';
 
 function Login() {

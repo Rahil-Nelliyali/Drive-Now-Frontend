@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Toaster } from "react-hot-toast";
-import jwtDecode from "jwt-decode";
-import { getLocal } from "../../helpers/auth";
-import instance from "../../utils/axios";
-import { toast } from "react-hot-toast";
 import NavBar from "./Navbar";
 
 export default function Profile() {

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
-import notfound from '../../images/notfound.gif';
 import instance from '../../utils/axios';
 import Swal from 'sweetalert2';
 
@@ -15,9 +14,6 @@ function Bookings() {
 
   const navigate = useNavigate();
   
-  const userData = JSON.parse(localStorage.getItem('user'));
-  const userId = userData.userID
-  console.log(userId)
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
@@ -38,6 +34,7 @@ function Bookings() {
       }
       const response = await instance.get(`/payment/bookings/?user=${userId}`);
       setBookings(response.data);
+      console.log(response.data)
     } catch (error) {
       console.error('could not fetch data', error);
       console.error('API error response:', error.response);
@@ -95,7 +92,6 @@ function Bookings() {
   };
 
   const filteredbookings = handleSearch();
-
   return (
     <div className='w-full h-full  relative'>
       <Toaster position='top-center' limit={3} />
@@ -121,6 +117,8 @@ function Bookings() {
                 <tr>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Car Name</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Booking date</th>
+                  <th scope="col" className="px-6 py-4 font-large text-gray-900">Pickup-Dropoff Location</th>
+
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Amount</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Status</th>
                   <th scope="col" className="px-6 py-4 font-large text-gray-900">Extra charges</th>
@@ -144,7 +142,11 @@ function Bookings() {
                           {new Date(booking.slot.date).toLocaleDateString()}
                         </p>
                       </td>
-                      
+                      <td className='px-6 py-4'>
+                        <p>
+                          <div>{booking.pickup_location.name} - {booking.dropoff_location.name}</div>
+                        </p>
+                      </td>
                       <td className='px-6 py-4'>
                         <p>
                           <div>{booking.car.price_per_day}</div>

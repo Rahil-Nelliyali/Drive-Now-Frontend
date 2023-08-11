@@ -23,6 +23,18 @@ function CarDetail() {
   const [showPayment, setShowPayment] = useState(false);
   const [bookedSlot, setBookedSlot] = useState([]);
   const navigate = useNavigate();
+  const [pickupLocation, setPickupLocation] = useState('');
+  const [dropoffLocation, setDropoffLocation] = useState('');
+  const [dropoffLocations, setDropoffLocations] = useState([]);
+  const [pickupLocations, setPickupLocations] = useState([]);
+  
+  const handleDropOffChange = (event) => {
+    setDropoffLocation(event.target.value);
+  };
+
+  const handlePickupChange = (event) => {
+    setPickupLocation(event.target.value);
+  };
   
 
   async function getSlotsForCar(carId) {
@@ -44,6 +56,8 @@ function CarDetail() {
     }
   }
 
+
+
   useEffect(() => {
     async function getCarDetails() {
       try {
@@ -56,16 +70,38 @@ function CarDetail() {
         console.log(response.data);
         const slotsData = await getSlotsForCar(response.data.id);
         setSlots(slotsData);
+       
+
       } catch (error) {
         console.error('Failed to fetch car details:', error);
         if (error.response && error.response.status === 401) {
-          // Unauthorized, redirect to login page
           navigate('/login'); // Redirect to your login page route
         }
       }
       setLoading(false);
     }
 
+    async function getDropoffLocations(carId) {
+      try {
+        const response = await instance.get(`/cars/pickup-locations/${carId}/`);
+        setDropoffLocations(response.data);
+        console.log(response.data,"1 outside drop")
+      } catch (error) {
+        console.error('Failed to fetch drop-off locations:', error);
+      }
+    }
+    async function getPickupLocations(carId) {
+      try {
+        const response = await instance.get(`/cars/pickup-locations/${carId}/`);
+        setPickupLocations(response.data);
+        console.log(response.data,"1 outside drop")
+      } catch (error) {
+        console.error('Failed to fetch drop-off locations:', error);
+      }
+    }
+
+    getDropoffLocations(id);
+    getPickupLocations(id);
    
 
    
@@ -102,7 +138,7 @@ function CarDetail() {
   
   
   const fetchData = async () => {
-    if (showDate && date) {
+    if (showDate && date ) {
       const slotsData = await getSlotsForCar(car.id);
       console.log(slotsData);
       setSlots(slotsData);
@@ -112,17 +148,6 @@ function CarDetail() {
   };
 
  
-  
-  const [value, setValue] = useState({ 
-    startDate: null ,
-    endDate: null 
-    }); 
-    
-    const handleValueChange = (newValue) => {
-    console.log("newValue:", newValue); 
-    setValue(newValue); 
-    } 
-
 
  
 
@@ -151,11 +176,49 @@ function CarDetail() {
               <h1 className='text-3xl font-semibold text-primaryBlue'>{car.name}</h1>
               <p className='text-gray-600 mt-2'>{car.description}</p>
 
+              <div className="mb-4">
+    <h5 className="mt-1"> Pickup Location</h5>
+    <select
+    value={pickupLocation}
+    onChange={handlePickupChange} 
+     
+        className="mt-3 border-gray-300 border-2 rounded-md py-2 px-3"
+    >
+        <option value="">Select Pickup Location</option>
+        {pickupLocations.map(location => (
+            <option key={location} value={location.id}>
+                {location.name}
+            </option>
+        ))}
+    </select>
+</div>
+<div className="mb-4">
+      <h5 className="mt-1"> Drop-off Location</h5>
+      <select
+  value={dropoffLocation} // Use dropoffLocation for value
+  onChange={handleDropOffChange} // Use handleDropOffChange for onChange
+  className="mt-3 border-gray-300 border-2 rounded-md py-2 px-3"
+>
+  <option value="">Select Drop-off Location</option>
+  {dropoffLocations.map(location => (
+    <option key={location} value={location.id}>
+      {location.name}
+    </option>
+  ))}
+</select>
+    </div>
 
               {!showDate ? (
                 <button
                   className="bg-blue-500 text-white py-2 px-4 rounded-md ms-1 mt-2"
-                  onClick={toggleDate}
+                  onClick={() => {
+                    if (!pickupLocation || !dropoffLocation) {
+                      toast.error("Please select both pickup and drop-off locations.");
+                    } else {
+                      toggleDate();
+                    }
+                  }}
+
                 >
                   Book Now!
                 </button>
@@ -224,7 +287,13 @@ function CarDetail() {
       
               {showPayment && (
                 <div className='fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50'>
-                  <PaymentDetails car={car} bookedSlot={selectedSlots} setShowPayment={setShowPayment} />
+                <PaymentDetails
+                car={car}
+                bookedSlot={selectedSlots}
+                pickupLocation={pickupLocation}
+                dropoffLocation={dropoffLocation}
+                setShowPayment={setShowPayment}
+              />
                 </div>
               )}
 

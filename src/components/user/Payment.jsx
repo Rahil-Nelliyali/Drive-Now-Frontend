@@ -16,7 +16,7 @@ useEffect(()=>{
 
 const history = useNavigate()
 
-const {car,bookedSlot} = props
+const {car,bookedSlot,pickupLocation, dropoffLocation} = props
   
 // this function will handel payment when user submit his/her money
 // and it will confim if payment is successfull or not
@@ -74,6 +74,11 @@ const {car,bookedSlot} = props
     bodyData.append("amount", car.price_per_day.toString());
     bodyData.append("name", car.renter.username);
     bodyData.append("user",user)
+    console.log(pickupLocation,': pickup location')
+    console.log(pickupLocation.id,'pickup location id')
+    bodyData.append("pickup_location",pickupLocation)
+    bodyData.append("dropoff_location",dropoffLocation)
+
     bodyData.append('car',car.id)
     bodyData.append('slot',bookedSlot[0].id)
 

@@ -1,25 +1,21 @@
 import React from 'react';
 
 import PaymentPage from "./Payment";
-import { BASE_URL } from "../../utils/axios";
-import { format } from 'date-fns';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
 export default function PaymentDetails(props) {
-  const { car, bookedSlot,setShowPayment } = props;
-  console.log(bookedSlot[0].id,'booked slot')
+  const { car, bookedSlot, pickupLocation, dropoffLocation, setShowPayment } = props;
 
+  console.log(bookedSlot[0].id,'booked slot')
+  console.log(pickupLocation,': pickupLocation id')
   const slot = bookedSlot[0];
   const start_time = new Date(slot.date);
   const end_time = new Date(slot.date); // Convert the date string to a Date object
   end_time.setDate(end_time.getDate() + 1);
 
   // Calculate the number of days beyond the return date
-  const today = new Date();
-  const daysLate = Math.max(0, Math.ceil((today - end_time) / (1000 * 60 * 60 * 24)));
 
   // Calculate the additional charges
-  const lateCharges = daysLate * car.price_per_day;
 
   return (
     <div className="flex items-center justify-center  bg-gradient-to-br from-indigo-800 to-indigo-600">
@@ -46,7 +42,7 @@ export default function PaymentDetails(props) {
             If the car is not returned by the end of the same day, you will be charged {car.price_per_day} for each additional day.
           </p>
           <div className="w-full flex items-center justify-center mt-6">
-            <PaymentPage car={car} bookedSlot={bookedSlot} />
+            <PaymentPage car={car} bookedSlot={bookedSlot} pickupLocation={pickupLocation} dropoffLocation={dropoffLocation}/>
           </div>
         </div>
       </div>

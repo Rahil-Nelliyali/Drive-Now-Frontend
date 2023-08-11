@@ -23,6 +23,7 @@ import PaymentPage from './components/user/Payment'
 import PaymentSuccessPage from './components/user/PaymentSuccess'
 import RenterBookings from './components/renter/Bookings';
 import CreateSlot from './components/renter/CreateSlot';
+import CreateLocation from './components/renter/CreateLocation';
 
 import Bookings from './components/user/MyBookings';
 import AllBookings from './components/admin/Bookings';
@@ -63,6 +64,7 @@ function App() {
           <Route path='/createcategory' Component={CreateCategory}/>
           <Route path='/renterbookings' Component={RenterBookings}/>
           <Route path='/createslot/:id' Component={CreateSlot}/>
+          <Route path='/createlocations/:id' Component={CreateLocation}/>
 
         </Routes>
       </Router>

@@ -199,6 +199,10 @@ console.log(formData,'asdfghj');
     navigate(`/createslot/${carId}`);
   };
 
+  const handleCreateLocation = (carId) => {
+    navigate(`/createlocations/${carId}`);
+  };
+
   
 
 
@@ -337,6 +341,12 @@ console.log(formData,'asdfghj');
                         >
                           Add Slot
                         </button>
+                        <button
+                        onClick={() => handleCreateLocation(car.id)}
+                        className="bg-blue-600 text-white rounded px-2 py-1 transition duration-300 ease-in-out transform hover:scale-110 hover:bg-blue-700 focus:outline-none"
+                      >
+                        Add Pickup Location
+                      </button>
                      
                       </div>
                     </td>
