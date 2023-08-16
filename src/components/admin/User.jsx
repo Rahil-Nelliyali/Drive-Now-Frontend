@@ -6,8 +6,7 @@ import instance from "../../utils/axios";
 
 function User() {
   const [user, setUser] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1)
-  const [postsPerPage, setPostsPerPage] =useState(5)
+  const [searchQuery, setSearchQuery] = useState('');
 
   async function getUser() {
     const response = await instance.get("api/users/");
@@ -29,10 +28,15 @@ function User() {
     // console.log(response);
   };
 
-  console.log(user);
-  const lastPostIndex =currentPage * postsPerPage;
-  const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentUsers = user.slice(firstPostIndex,lastPostIndex);
+
+  const handleSearch = () => {
+    const filteredUsers = user.filter(user =>
+      user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) || user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    return filteredUsers;
+  };
+
+  const filteredUsers = handleSearch();
 
   return (
     <div className="flex h-full bg-acontent">
@@ -40,13 +44,15 @@ function User() {
       <div className="px-5 w-full h-auto min-h-screen mx-5 mt-2 py-8 font-poppins flex flex-col place-content-start place-items-center bg-white shadow-xl rounded-xl">
         <div className="w-full h-screen px-3 font-poppins">
           {/* User search input */}
-          <div className="w-full p-5">
-            <input
+          <div className="w-full p-5 flex justify-between">
+          <h1 className='  text-3xl text-start  ms-4'>Users</h1>
+          <input
               type="text"
-              placeholder="Search by name or email"
-              className="border-b-2 border-primaryBlue focus:outline-none px-2 w-full"
-            />
-          </div>
+              placeholder='&#x1F50D; Search '
+              className="border border-primaryBlue border-solid focus:outline-none px-2 w-1/5 rounded-lg "
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            /></div>
           {/* User table */}
           <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
             <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
@@ -70,7 +76,7 @@ function User() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-                {currentUsers.map((user, index) => (
+                {filteredUsers.map((user, index) => (
                   <tr className="hover:bg-gray-50" key={index}>
                     <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
                       <div className="relative h-10 w-10">

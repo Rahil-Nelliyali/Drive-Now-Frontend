@@ -149,7 +149,8 @@ function Bookings() {
                       </td>
                       <td className='px-6 py-4'>
                         <p>
-                          <div>{booking.car.price_per_day}</div>
+                        <div>&#8377; {(booking.car.price_per_day *1)}</div>
+
                         </p>
                       </td>
                       <td className='px-6 py-4'>

@@ -169,7 +169,7 @@ function CarDetail() {
               <img className='w-full h-screen object-cover rounded-md' src={car.image} alt='car_image' />
               <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity'>
                 <h1 className='text-4xl font-semibold text-white'>{car.name}</h1>
-                <p className='text-xl font-normal text-gray-300 mt-2'>{car.category.name}</p>
+                <p className='text-xl font-normal text-gray-300 mt-2'>{"₹ " + car.price_per_day + "/ per day"}</p>
               </div>
             </div>
             <div className='mt-4'>
@@ -299,7 +299,7 @@ function CarDetail() {
 
               <div className='grid grid-cols-2 gap-4 mt-4'>
                 <div>
-                  <p className='text-gray-600'>Price Per Day: {'₹ ' + car.price_per_day}</p>
+                  <p className='text-gray-600'>Location: {car.category.name}</p>
                   <p className='text-gray-600'>Brand: {car.brand}</p>
                   <p className='text-gray-600'>Year Manufactured: {car.year_manufactured}</p>
                   <p className='text-gray-600'>Mileage: {car.mileage}</p>

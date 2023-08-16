@@ -11,7 +11,6 @@ export const BASE_URL = localBaseUrl;
 
 const instance = axios.create({
   baseURL: localBaseUrl,
-  // timeout: 1000,
   headers: {
     "Content-Type": "application/json",
   },

@@ -4,12 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import instance from '../../utils/axios';
 import {
     Button,
-    Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
     Input,
-    closeDialog,
   } from "@material-tailwind/react";
 import Sidebar from "./Sidebar";
 import LateChargesDialog from './LateCharges';
@@ -178,7 +173,8 @@ export default function RenterBookings() {
                      
                       <td className='px-6 py-4'>
                         <p>
-                        <div>{(booking.car.price_per_day * 0.9).toFixed(2)} </div>
+                        <div>&#8377; {(booking.car.price_per_day * 0.9).toFixed(0)}</div>
+
                          
                         </p>
                       </td>
@@ -217,6 +213,8 @@ export default function RenterBookings() {
                       <td className='px-6 py-4'>
                       {booking.status === 'cancelled' ? (
                         <span className='text-red-500'>Booking cancelled by customer</span>
+                      ): booking.status === 'rejected' ? (
+                        <span className='text-red-500'>Booking Rejected</span>
                       ) : (
                         <div>
                           <select

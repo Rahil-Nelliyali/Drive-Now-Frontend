@@ -5,8 +5,7 @@ import instance from "../../utils/axios";
 
 function Renter() {
   const [renters, setRenters] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(5);
+  const [searchQuery, setSearchQuery] = useState('');
 
   async function getRenters() {
     const response = await instance.get("api/renters/");
@@ -24,14 +23,21 @@ function Renter() {
   }, []);
 
   const statusChange = (id) => {
-    // console.log('user id', id)
     instance.get(`api/blockrenter/${id}/`).then(() => getRenters());
-    // console.log(response);
   };
 
-  const lastPostIndex = currentPage * postsPerPage;
-  const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentrenters = renters.slice(firstPostIndex, lastPostIndex);
+
+
+
+
+  const handleSearch = () => {
+    const filteredRenters = renters.filter(renter =>
+      renter.first_name.toLowerCase().includes(searchQuery.toLowerCase()) || renter.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||renter.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    return filteredRenters;
+  };
+
+  const filteredRenters = handleSearch();
 
   return (
     <div className="flex h-full bg-acontent">
@@ -39,7 +45,15 @@ function Renter() {
       <div className="px-5 w-full h-auto min-h-screen mx-5 mt-2 py-8 font-poppins flex flex-col place-content-start place-items-center bg-white shadow-xl rounded-xl">
         <div className="w-full h-screen px-3 font-poppins">
           <Toaster position="top-center" reverseOrder={false} />
-
+          <div className="w-full p-5 flex justify-between">
+          <h1 className='  text-3xl text-start  ms-4'>Renters</h1>
+          <input
+              type="text"
+              placeholder='&#x1F50D; Search '
+              className="border border-primaryBlue border-solid focus:outline-none px-2 w-1/5 rounded-lg "
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            /></div>
           <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
             <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
               <thead className="bg-gray-50">
@@ -78,11 +92,11 @@ function Renter() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-                 {currentrenters.map((renter, index) => (
+                 {filteredRenters.map((renter, index) => (
                   <tr className="hover:bg-gray-50" key={index}>
-                    <td className="px-6 py-4">{renter.full_name}</td>
+                    <td className="px-6 py-4">{renter.first_name} {renter.last_name}</td>
                     <td className="px-6 py-4">{renter.email}</td>
-                    <td className="px-6 py-4">{renter.mobile_no}</td>
+                    <td className="px-6 py-4">{renter.phone_number}</td>
                     <td class="px-6 py-4">
                       {renter.is_active ? (
                         <span class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">
