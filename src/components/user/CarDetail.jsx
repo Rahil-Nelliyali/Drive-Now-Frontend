@@ -7,11 +7,8 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import PaymentDetails from './PaymentDetails';
 import { useNavigate } from 'react-router-dom';
 import './loader.css'
+
 function CarDetail() {
-
-
-
-  
   const { id } = useParams();
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
