@@ -14,6 +14,7 @@ function Register() {
     password2: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { first_name, last_name, email, phone_number,password, password2 } = formData;
   
   const handleChange = (e) => {
@@ -22,6 +23,10 @@ function Register() {
 
   const signupSubmit = async (e) => {
     e.preventDefault();
+
+    if (isSubmitting) {
+      return; // Prevent multiple submissions
+    }
 
     if (first_name.trim() === "" || last_name.trim() === "" || email.trim() === "" || phone_number.trim() === "" || password.trim() === "" ) {
       toast.error("Please fill in all fields.");
@@ -32,6 +37,8 @@ function Register() {
       toast.error("Passwords do not match.");
       return;
     }
+
+    setIsSubmitting(true); 
 
     try {
       const response = await instance.post('api/register/', {
@@ -46,12 +53,22 @@ function Register() {
 
       console.log(response);
       if (response.status === 200) {
+        setFormData({
+          first_name: "",
+          last_name: "",
+          email: "",
+          phone_number: "",
+          password: "",
+          password2: "",
+        });
         toast.success("Please activate your email ");
       } else {
         toast.error("Something went wrong");
       }
     } catch(error) {
       toast.error("User with same email id already exists.");
+    }finally {
+      setIsSubmitting(false); // Set submitting state back to false
     }
   };
 
@@ -118,8 +135,9 @@ function Register() {
           <button
             type="submit"
             className="w-full bg-red-500 text-white rounded-full py-2 px-4 font-semibold focus:outline-none focus:shadow-outline"
+            disabled={isSubmitting} // Disable the button when submitting
           >
-            SIGNUP
+            {isSubmitting ? "Processing..." : "SIGNUP"}
           </button>
         </form>
         <p className="mt-4 text-center text-red-500 text-sm">

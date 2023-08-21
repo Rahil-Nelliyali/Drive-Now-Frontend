@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams} from 'react-router-dom';
+import { useParams, Link} from 'react-router-dom';
 import { toast, Toaster } from "react-hot-toast";
 import Navbar from './Navbar';
 import instance from '../../utils/axios';
@@ -293,6 +293,10 @@ function CarDetail() {
               />
                 </div>
               )}
+
+              <Link to={`/chat`} className="bg-green-500 text-white py-2 px-4 rounded-md ms-1 mt-2">
+              Chat with Renter
+            </Link>
 
               <div className='grid grid-cols-2 gap-4 mt-4'>
                 <div>

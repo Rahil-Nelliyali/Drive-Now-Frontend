@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import { toast, Toaster } from "react-hot-toast";
 import { AiOutlineSearch } from 'react-icons/ai';
+import { FaEnvelope } from 'react-icons/fa'; 
 
 function NavBar() {
   const navigate = useNavigate();
@@ -82,7 +83,10 @@ function NavBar() {
       </div>
 
       {user_auth ? (
-        <div className='flex gap-2'>
+        <div className='flex gap-2 items-center'>
+        <Link to='/chat'>
+            <FaEnvelope className='text-white text-2xl  hover:text-customColorC transition duration-300' />
+          </Link>
           <button
             className='px-4 py-2 bg-green-400 mx-2 text-black shadow-xl rounded-xl transition duration-300 ease-in-out transform hover:scale-105'
             onClick={logout}

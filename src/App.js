@@ -27,6 +27,10 @@ import CreateLocation from './components/renter/CreateLocation';
 
 import Bookings from './components/user/MyBookings';
 import AllBookings from './components/admin/Bookings';
+
+
+import ChatGroup from './pages/chatgroups';
+import CreateRoom from './components/renter/CreateRoom';
 function App() {
   return (
     <div className="App">
@@ -43,6 +47,8 @@ function App() {
           <Route path='/success' exact Component={PaymentSuccessPage} />
           <Route path='/mybookings' exact Component={Bookings} />
           <Route path='/profile' exact Component={Profile} />
+          <Route path='/chat' exact Component={ChatGroup} />
+
 
 
 
@@ -65,6 +71,7 @@ function App() {
           <Route path='/renterbookings' Component={RenterBookings}/>
           <Route path='/createslot/:id' Component={CreateSlot}/>
           <Route path='/createlocations/:id' Component={CreateLocation}/>
+          <Route path='/createRoom' Component={CreateRoom}/>
 
         </Routes>
       </Router>

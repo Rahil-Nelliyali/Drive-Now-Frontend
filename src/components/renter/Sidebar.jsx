@@ -6,7 +6,7 @@ import { FaCar, FaCarSide  } from 'react-icons/fa';
 import { FiCalendar } from 'react-icons/fi';
 import { FaFolder } from 'react-icons/fa';
 import { toast, Toaster } from 'react-hot-toast';
-
+import { FiPlus, FiMessageSquare } from "react-icons/fi";
 export default function Sidebar() {
   const navigate = useNavigate();
 
@@ -57,6 +57,23 @@ export default function Sidebar() {
         <FiCalendar size={45} className='px-3' />
         <h3 className='font-semibold'>Bookings</h3>
         </NavLink>
+
+        <NavLink
+        to='/createRoom'
+        className='px-1 list-none text-white hover:text-customColorC transition duration-300'
+        activeClassName='text-customColorC'
+      >
+      <FiPlus size={45} className='px-3' />
+      <h3 className='font-semibold'>Create Room</h3>
+      </NavLink>
+      <NavLink
+        to='/chat'
+        className='px-1 list-none text-white hover:text-customColorC transition duration-300'
+        activeClassName='text-customColorC'
+      >
+      <FiMessageSquare size={45} className='px-3' />
+      <h3 className='font-semibold'>Messages</h3>
+      </NavLink>
         <CiLogout
           size={30}
           className='cursor-pointer text-white hover:text-customColorC transition duration-300'

@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { ChakraProvider } from '@chakra-ui/react'
 import { ThemeProvider } from "@material-tailwind/react";
+import { SocketProvider } from './components/socket/socketprovider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,7 +14,9 @@ root.render(
      <ThemeProvider>
      <ChakraProvider>
       <Provider store={store}>
-    <App />
+      <SocketProvider>
+      <App />
+      </SocketProvider>
     </Provider>
     </ChakraProvider>
     </ThemeProvider>

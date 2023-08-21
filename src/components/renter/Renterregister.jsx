@@ -17,7 +17,7 @@ function RenterRegister() {
     password: "",
     password2: "",
   });
-
+  const [isSubmitting, setIsSubmitting] = useState(false); 
   const { first_name, last_name, email, phone_number,password, password2 } = formData;
   
   const handleChange = (e) => {
@@ -26,6 +26,9 @@ function RenterRegister() {
 
   const signupSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) {
+      return; // Prevent multiple submissions
+    }
 
     if (first_name.trim() === "" || last_name.trim() === "" || email.trim() === "" || phone_number.trim() === "" || password.trim() === "" ) {
       toast.error("Please fill in all fields.");
@@ -36,7 +39,7 @@ function RenterRegister() {
       toast.error("Passwords do not match.");
       return;
     }
-
+    setIsSubmitting(true);
     try {
       const response = await instance.post('api/renterregister/', {
         first_name,
@@ -50,12 +53,24 @@ function RenterRegister() {
 
       console.log(response);
       if (response.status === 200) {
+        setFormData({
+          first_name: "",
+          last_name: "",
+          email: "",
+          phone_number: "",
+          password: "",
+          password2: "",
+        });
+  
         toast.success("Please activate your email ");
       } else {
         toast.error("Something went wrong");
       }
     } catch(error) {
       toast.error("Renter with same email id already exists.");
+    }
+    finally {
+      setIsSubmitting(false); // Set submitting state back to false
     }
   };
 
@@ -119,12 +134,13 @@ function RenterRegister() {
           value={password2}
           onChange={handleChange}
         />
-          <button
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-full py-3 font-bold transition duration-300"
-            type="submit"
-          >
-            SIGNUP
-          </button>
+        <button
+        type="submit"
+        className="w-full bg-red-500 text-white rounded-full py-2 px-4 font-semibold focus:outline-none focus:shadow-outline"
+        disabled={isSubmitting} // Disable the button when submitting
+      >
+        {isSubmitting ? "Processing..." : "SIGNUP"}
+      </button>
         </form>
         <p className="mt-4 text-sm text-gray-600">
           Already a member?{' '}
